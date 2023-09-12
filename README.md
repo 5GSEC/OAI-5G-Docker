@@ -114,3 +114,5 @@ colosseumcli snapshot <new-image-name>
 
 - Support multiple xNBs and UEs
 - Support network slicing deployment
+- Support ONOS SD-RAN RIC Agent (w/ SECSM)
+- Support FlexRIC
