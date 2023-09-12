@@ -66,12 +66,12 @@ cd lte-rfsim / lte-usrp / nr-rfsim / rf-usrp
 
 NR at band 78 (Center frequency = 3.6GHZ):
 ```
-colosseumcli rf start 10011 -c./
+colosseumcli rf start 10011 -c
 ```
 
 LTE at band 7 ? (Center frequency = 2.6GHZ):
 ```
-colosseumcli rf start 10012 -c./
+colosseumcli rf start 10012 -c
 ```
 
 OR 10018?
