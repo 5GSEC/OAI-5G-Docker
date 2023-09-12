@@ -42,9 +42,10 @@ cd lte-rfsim / lte-usrp / nr-rfsim / rf-usrp
 ./run_all.sh
 ```
 
-### Colosseum
+## Colosseum
 
-RF Scenario Setup
+### RF Scenario Setup
+
 | ID    |                                Scenario Name             | Center Freq (GHZ)    | #Nodes | Duration(s)   |
 |-------|---------------------------------------------------------:|---------|----|-----|
 | 52003 |                                All Paths 0 dB - 2.54 GHz | 2.54    | 20 | 1   |
