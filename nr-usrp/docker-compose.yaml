@@ -34,21 +34,21 @@ services:
         image: oaisoftwarealliance/oai-amf:v1.5.0
         environment:
             - TZ=Europe/paris
-            - MCC=999
-            - MNC=70
+            - MCC=208
+            - MNC=99
             - REGION_ID=128
             - AMF_SET_ID=1
-            - SERVED_GUAMI_MCC_0=999
-            - SERVED_GUAMI_MNC_0=70
+            - SERVED_GUAMI_MCC_0=208
+            - SERVED_GUAMI_MNC_0=99
             - SERVED_GUAMI_REGION_ID_0=128
             - SERVED_GUAMI_AMF_SET_ID_0=1
             - SERVED_GUAMI_MCC_1=460
             - SERVED_GUAMI_MNC_1=11
             - SERVED_GUAMI_REGION_ID_1=10
             - SERVED_GUAMI_AMF_SET_ID_1=1
-            - PLMN_SUPPORT_MCC=999
-            - PLMN_SUPPORT_MNC=70
-            - PLMN_SUPPORT_TAC=0x0001
+            - PLMN_SUPPORT_MCC=208
+            - PLMN_SUPPORT_MNC=99
+            - PLMN_SUPPORT_TAC=0xa000
             # Only one slice is defined (1, 0xFFFFFF).
             - SST_0=1
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
@@ -63,6 +63,7 @@ services:
             - MYSQL_USER=root
             - MYSQL_PASS=linux
             - MYSQL_DB=oai_db
+            - OPERATOR_KEY=c42449363bbad02b66d16bc975d77cc1
             # NF registration
             - NRF_IPV4_ADDRESS=192.168.71.130
             - NRF_FQDN=oai-nrf
@@ -184,7 +185,7 @@ services:
         image: oai-nr-ue:2023-w23
         privileged: true
         container_name: oai-nr-ue
-        environment: 
+        environment:
             USE_ADDITIONAL_OPTIONS: -E --sa -r 106 --numerology 1 --uicc0.imsi 999700000000001 -C 3619200000 --log_config.global_log_options level,nocolor,time
         depends_on:
             - oai-gnb
@@ -203,7 +204,7 @@ services:
         image: oaisoftwarealliance/oai-nr-ue:develop
         privileged: true
         container_name: rfsim5g-oai-nr-ue2
-        environment: 
+        environment:
             RFSIMULATOR: 192.168.71.140
             USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 --uicc0.imsi 208990100001101 -C 3619200000 --log_config.global_log_options level,nocolor,time
         depends_on:
