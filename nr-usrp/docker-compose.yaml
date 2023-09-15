@@ -138,9 +138,18 @@ services:
         cap_add:
             - NET_ADMIN
             - SYS_ADMIN
+            - NET_RAW
         cap_drop:
             - ALL
-        privileged: true
+        devices:
+            - /dev/net/tun:/dev/net/tun
+        sysctls:
+            - net.ipv4.conf.eth0.rp_filter=0
+            - net.ipv4.conf.all.forwarding=1
+            - net.ipv4.conf.all.send_redirects=0
+            - net.ipv4.conf.default.send_redirects=0
+            - net.ipv4.conf.all.accept_redirects=0
+            - net.ipv4.conf.default.accept_redirects=0
         networks:
             public_net:
                 ipv4_address: 192.168.71.134
