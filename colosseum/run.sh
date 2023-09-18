@@ -52,7 +52,7 @@ while [ -n "$1" ]; do
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
             _exec_path="./nr-softmodem"
             ;;
-        5|nrue)
+        5|nrue*)
             _find_route=false
             _prefix="NR-UE"
             _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/$_arg.uicc.conf"
@@ -60,10 +60,10 @@ while [ -n "$1" ]; do
             _common_args="-O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem"
             ;;
-		6|nrue-att-bts)
+	6|nrue-att-bts)
             _find_route=false
             _prefix="NR-UE-Attack"
-            _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/$_arg.uicc.conf"
+            _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/nrue0.uicc.conf"
             _usrp_args="type=x300"
 			_attack_args="bts-attack 100"
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
