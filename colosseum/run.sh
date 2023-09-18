@@ -2,13 +2,16 @@
 
 _config_path=""
 _oai_root=/root/OAI-5G/
-_log_path=/root/mylogs
-_pcap_path=/root/mylogs
+_log_path=/logs/logs/
+_pcap_path=/logs/pcaps/
 _prefix=""
 _pcap_args=""
 _pcap_enabled=true
 _find_route=false
 _cmd=""
+
+mkdir -p $_log_path
+mkdir -p $_pcap_path
 
 while [ -n "$1" ]; do
     _arg="$1"; shift
