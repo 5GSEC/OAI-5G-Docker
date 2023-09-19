@@ -69,6 +69,16 @@ while [ -n "$1" ]; do
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
+		7|flexric)
+			_exec_path="/root/OAI-5G/openair2/E2AP/flexric/build/examples/ric/nearRT-RIC"
+			$_exec_path
+			exit 0
+			;;
+		8|flexric-kpm-xapp)
+			_exec_path="/root/OAI-5G/openair2/E2AP/flexric/build/examples/xApp/c/monitor/xapp_kpm_moni"
+            $_exec_path
+			exit 0
+			;;
         *)
             echo "ERROR: unrecognized option: \"$_arg\"."
             exit 1
