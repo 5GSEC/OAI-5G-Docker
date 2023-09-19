@@ -1,9 +1,10 @@
 #!/bin/bash
 
 _config_path=""
-_oai_root=/root/OAI-5G/
-_log_path=/logs/logs/
-_pcap_path=/logs/pcaps/
+_oai_root=/root/OAI-5G
+_oai_config_root=/root/OAI-5G-Docker
+_log_path=/logs/logs
+_pcap_path=/logs/pcaps
 _prefix=""
 _pcap_args=""
 _pcap_enabled=true
@@ -19,7 +20,7 @@ while [ -n "$1" ]; do
         0|enb)
             _find_route=true
             _prefix="ENB"
-            _config_path="/root/OAI-5G-Docker/lte-usrp/enb.conf"
+            _config_path="$_oai_config_root/lte-usrp/enb.conf"
             _common_args="-O $_config_path --usrp-tx-thread-config 1"
             _exec_path="./lte-softmodem"
             ;;
@@ -27,58 +28,58 @@ while [ -n "$1" ]; do
             _find_route=false
             _prefix="LTEUE"
             _usrp_args="type=x300"
-            _config_path="/root/OAI-5G-Docker/lte-usrp/lteue.usim-ci.conf"
+            _config_path="$_oai_config_root/lte-usrp/lteue.usim-ci.conf"
             _common_args="-O $_config_path -C 2680000000 -r 25 --ue-scan-carrier --nokrnmod 1 --noS1 --ue-rxgain 120 --ue-txgain 30 --ue-max-power 0 --ue-nb-ant-tx 1 --ue-nb-ant-rx 1 --usrp-args \"$_usrp_args\" -d"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./lte-uesoftmodem"
             ;;
         2|gnb)
             _find_route=true
             _prefix="GNB"
-            _config_path="/root/OAI-5G-Docker/nr-usrp/gnb.conf"
+            _config_path="$_oai_config_root/nr-usrp/gnb.conf"
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
             _exec_path="./nr-softmodem"
             ;;
         3|gnb-cu)
             _find_route=true
             _prefix="GNB-CU"
-            _config_path="/root/OAI-5G-Docker/nr-usrp/gnb-cu.conf"
+            _config_path="$_oai_config_root/nr-usrp/gnb-cu.conf"
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6"
             _exec_path="./nr-softmodem"
             ;;
         4|gnb-du)
             _find_route=true
             _prefix="GNB-DU"
-            _config_path="/root/OAI-5G-Docker/nr-usrp/gnb-du.conf"
+            _config_path="$_oai_config_root/nr-usrp/gnb-du.conf"
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
             _exec_path="./nr-softmodem"
             ;;
         5|nrue*)
             _find_route=false
             _prefix="NR-UE"
-            _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/$_arg.uicc.conf"
+            _config_path="$_oai_config_root/nr-usrp/nr-ues/$_arg.uicc.conf"
             _usrp_args="type=x300"
             _common_args="-O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem"
             ;;
-		6|nr-attack-bts)
+	6|nr-attack-bts)
             _find_route=false
             _prefix="NR-UE-Attack"
-            _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/nrue.attack.uicc.conf"
+            _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
             _usrp_args="type=x300"
-			_attack_args="--bts-attack 300 --bts-delay 300" # --log_config.nr_mac_log_level debug"
+	    _attack_args="--bts-attack 300 --bts-delay 300" # --log_config.nr_mac_log_level debug"
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
-		7|flexric)
-			_exec_path="/root/OAI-5G/openair2/E2AP/flexric/build/examples/ric/nearRT-RIC"
+	7|flexric)
+	    _exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/ric/nearRT-RIC"
 			$_exec_path
 			exit 0
 			;;
-		8|flexric-kpm-xapp)
-			_exec_path="/root/OAI-5G/openair2/E2AP/flexric/build/examples/xApp/c/monitor/xapp_kpm_moni"
+	8|flexric-kpm-xapp)
+	    _exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/xApp/c/monitor/xapp_kpm_moni"
             $_exec_path
-			exit 0
-			;;
+	    exit 0
+	    ;;
         *)
             echo "ERROR: unrecognized option: \"$_arg\"."
             exit 1
