@@ -62,10 +62,20 @@ while [ -n "$1" ]; do
             ;;
 		6|nr-attack-bts)
             _find_route=false
-            _prefix="NR-UE-Attack"
+            _prefix="NR-UE-Attack-BTS"
             _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/nrue.attack.uicc.conf"
             _usrp_args="type=x300"
 			_attack_args="--bts-attack 300 --bts-delay 300" # --log_config.nr_mac_log_level debug"
+            _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
+            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
+            ;;
+		7|nr-attack-blind)
+			_find_route=false
+			_prefix="NR-UE-Attack-BLIND"
+            _config_path="/root/OAI-5G-Docker/nr-usrp/nr-ues/nrue.attack.uicc.conf"
+			_usrp_args="type=x300"
+			_tmsi="123456" # change me
+            _attack_args="--blind-dos-attack 300 --RRC-TMSI $_tmsi" # --log_config.nr_mac_log_level debug"
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
