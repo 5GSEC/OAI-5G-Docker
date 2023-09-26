@@ -63,6 +63,11 @@ cd lte-rfsim / lte-usrp / nr-rfsim / rf-usrp
 | 20061 |                                     IAB White Scenario 1 | 3.6     | 11 | 1   |
 | 20062 | IAB 0dB 2 Donors 2 Relays 20 UEs                         | 3.6     | 26 | 1   |
 | 35004 | Cellular Rural Small 3.6 GHz Static 1 at 3.6 GHz + 51 dB | 3.6     | 13 | 1   |
+| 35005 |	Cellular Rural Small 3.6 GHz Static 1 at 3.6 GHz + 40 dB | 3.6     | 13 |	1   |
+| 52004	| All Paths 0 dB - 3.6 GHz                                 | 3.6     | 20 |	1   |
+| 10078 |	Rome no mobility (close) - 3.62 GHz	                     | 3.62    | 50 |	2   |
+| 10079 |	Rome low mobility - 3.62 GHz	                           | 3.62    | 50 |	600 |
+| 33010 |	Samarcanda Mobility 1 + 70 dB	                           | 3.7     | 14 |	520 |
 
 NR at band 78 (Center frequency = 3.6GHZ):
 ```
