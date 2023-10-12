@@ -66,7 +66,7 @@ while [ -n "$1" ]; do
             _prefix="NR-UE-Attack-BTS"
             _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
             _usrp_args="type=x300"
-	        _attack_args="--bts-attack 300 --bts-delay 300" # --log_config.nr_mac_log_level debug"
+	        _attack_args="--bts-attack 300 --bts-delay 200" # --log_config.nr_mac_log_level debug"
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
@@ -77,6 +77,16 @@ while [ -n "$1" ]; do
 			_usrp_args="type=x300"
 			_tmsi="123456" # change me
             _attack_args="--blind-dos-attack 300 --RRC-TMSI $_tmsi" # --log_config.nr_mac_log_level debug"
+            _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
+            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
+            ;;
+ 		nr-ue-tmsi)
+			_find_route=false
+            _prefix="NR-UE-TMSI"
+            _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue0.uicc.conf"
+            _usrp_args="type=x300"
+            _tmsi="123456" # change me
+            _attack_args="--RRC-TMSI $_tmsi" # --log_config.nr_mac_log_level debug"
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
