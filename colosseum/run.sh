@@ -17,14 +17,14 @@ mkdir -p $_pcap_path
 while [ -n "$1" ]; do
     _arg="$1"; shift
     case "$_arg" in
-        0|enb)
+        enb)
             _find_route=true
             _prefix="ENB"
             _config_path="$_oai_config_root/lte-usrp/enb.conf"
             _common_args="-O $_config_path --usrp-tx-thread-config 1"
             _exec_path="./lte-softmodem"
             ;;
-        1|lteue)
+        lteue)
             _find_route=false
             _prefix="LTEUE"
             _usrp_args="type=x300"
@@ -32,28 +32,42 @@ while [ -n "$1" ]; do
             _common_args="-O $_config_path -C 2680000000 -r 25 --ue-scan-carrier --nokrnmod 1 --noS1 --ue-rxgain 120 --ue-txgain 30 --ue-max-power 0 --ue-nb-ant-tx 1 --ue-nb-ant-rx 1 --usrp-args \"$_usrp_args\" -d"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./lte-uesoftmodem"
             ;;
-        2|gnb)
+        gnb)
             _find_route=true
             _prefix="GNB"
             _config_path="$_oai_config_root/nr-usrp/gnb.conf"
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
             _exec_path="./nr-softmodem"
             ;;
-        3|gnb-cu)
+		gnb-rfsim)
+			_find_route=true
+			_prefix="GNB-RFSIM"
+			_config_path="$_oai_config_root/nr-rfsim/gnb.conf"
+			_common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1 --rfsim"
+			_exec_path="./nr-softmodem"
+			;;
+        gnb-cu)
             _find_route=true
             _prefix="GNB-CU"
             _config_path="$_oai_config_root/nr-usrp/gnb-cu.conf"
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6"
             _exec_path="./nr-softmodem"
             ;;
-        4|gnb-du)
+        gnb-du)
             _find_route=true
             _prefix="GNB-DU"
             _config_path="$_oai_config_root/nr-usrp/gnb-du.conf"
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
             _exec_path="./nr-softmodem"
             ;;
-        5|nrue*)
+		nrue-rfsim)
+            _find_route=false
+            _prefix="NR-UE-RFSIM"
+            _config_path="$_oai_config_root/nr-rfsim/nrue.uicc.conf"
+            _common_args="-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 -O $_config_path"
+            _exec_path="./nr-uesoftmodem"
+            ;;
+        nrue*)
             _find_route=false
             _prefix="NR-UE"
             _config_path="$_oai_config_root/nr-usrp/nr-ues/$_arg.uicc.conf"
@@ -61,7 +75,7 @@ while [ -n "$1" ]; do
             _common_args="-O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem"
             ;;
-		6|nr-attack-bts)
+		nr-attack-bts)
             _find_route=false
             _prefix="NR-UE-Attack-BTS"
             _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
@@ -70,7 +84,7 @@ while [ -n "$1" ]; do
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
-		7|nr-attack-blind)
+		nr-attack-blind)
 			_find_route=false
 			_prefix="NR-UE-Attack-BLIND"
             _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
@@ -90,12 +104,12 @@ while [ -n "$1" ]; do
             _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
             _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
             ;;
-		8|flexric)
+		flexric)
 	    	_exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/ric/nearRT-RIC"
 			$_exec_path
 			exit 0
 			;;
-		9|flexric-kpm-xapp)
+		flexric-kpm-xapp)
 	    	_exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/xApp/c/monitor/xapp_kpm_moni"
             $_exec_path
 	    	exit 0
