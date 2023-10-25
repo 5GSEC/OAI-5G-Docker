@@ -9,14 +9,26 @@ _prefix=""
 _pcap_args=""
 _pcap_enabled=true
 _find_route=false
+_rfsim=false
 _cmd=""
+_usrp_args="type=x300"
+_colosseum_prefix="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0"
 
 mkdir -p $_log_path
 mkdir -p $_pcap_path
 
+for arg in "$@"; do
+    if [ "$arg" = "rfsim" ]; then
+        _rfsim=true
+    fi
+done
+
+
 while [ -n "$1" ]; do
     _arg="$1"; shift
     case "$_arg" in
+        rfsim)
+            ;;
         enb)
             _find_route=true
             _prefix="ENB"
@@ -30,22 +42,21 @@ while [ -n "$1" ]; do
             _usrp_args="type=x300"
             _config_path="$_oai_config_root/lte-usrp/lteue.usim-ci.conf"
             _common_args="-O $_config_path -C 2680000000 -r 25 --ue-scan-carrier --nokrnmod 1 --noS1 --ue-rxgain 120 --ue-txgain 30 --ue-max-power 0 --ue-nb-ant-tx 1 --ue-nb-ant-rx 1 --usrp-args \"$_usrp_args\" -d"
-            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./lte-uesoftmodem"
+            _exec_path="./lte-uesoftmodem"
             ;;
         gnb)
             _find_route=true
-            _prefix="GNB"
-            _config_path="$_oai_config_root/nr-usrp/gnb.conf"
-            _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
+            if $_rfsim; then
+                _prefix="GNB-RFSIM"
+                _config_path="$_oai_config_root/nr-rfsim/gnb.conf"
+                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1 --rfsim"
+            else
+                _prefix="GNB"
+                _config_path="$_oai_config_root/nr-usrp/gnb.conf"
+                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
+            fi
             _exec_path="./nr-softmodem"
             ;;
-		gnb-rfsim)
-			_find_route=true
-			_prefix="GNB-RFSIM"
-			_config_path="$_oai_config_root/nr-rfsim/gnb.conf"
-			_common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1 --rfsim"
-			_exec_path="./nr-softmodem"
-			;;
         gnb-cu)
             _find_route=true
             _prefix="GNB-CU"
@@ -60,68 +71,47 @@ while [ -n "$1" ]; do
             _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
             _exec_path="./nr-softmodem"
             ;;
-		nrue-rfsim)
-            _find_route=false
-            _prefix="NR-UE-RFSIM"
-            _config_path="$_oai_config_root/nr-rfsim/nrue.uicc.conf"
-            _common_args="-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 -O $_config_path"
-            _exec_path="./nr-uesoftmodem"
-            ;;
         nrue*)
             _find_route=false
-            _prefix="NR-UE"
-            _config_path="$_oai_config_root/nr-usrp/nr-ues/$_arg.uicc.conf"
-            _usrp_args="type=x300"
-            _common_args="-O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
-            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem"
+            if $_rfsim; then
+                _prefix="NR-UE-RFSIM"
+                _config_path="$_oai_config_root/nr-rfsim/nrue.uicc.conf"
+                _common_args="-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 -O $_config_path"
+                _exec_path="./nr-uesoftmodem"
+            else
+                _prefix="NR-UE"
+                _config_path="$_oai_config_root/nr-usrp/nr-ues/$_arg.uicc.conf"
+                _common_args="-O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
+                _exec_path="$_colosseum_prefix ./nr-uesoftmodem"
+            fi
             ;;
-		nr-attack-bts)
+        nr-attack)
             _find_route=false
-            _prefix="NR-UE-Attack-BTS"
-            _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
-            _usrp_args="type=x300"
-	        _attack_args="--bts-attack 300 --bts-delay 188" # --log_config.nr_mac_log_level debug"
-            _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
-            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
+            shift 1 # take the rest args
+            _attack_args=$@
+            if $_rfsim; then
+                _prefix="NR-UE-ATTACK-RFSIM"
+                _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
+                _common_args="-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 -O $_config_path $_attack_args"
+                _exec_path="./nr-uesoftmodem.attack"
+            else
+                _prefix="NR-UE_ATTACK"
+                _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
+                _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1 $_attack_args"
+                _exec_path="$_colosseum_prefix ./nr-uesoftmodem.attack"
+            fi
+            break
             ;;
-		nr-attack-bts-rfsim)
-            _find_route=false
-            _prefix="NR-UE-RFSIM-Attack-BTS"
-            _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
-            _attack_args="--bts-attack 300 --bts-delay 188" # --log_config.nr_mac_log_level debug"
-            _common_args="$_attack_args -O $_config_path --sa -E -r 106 -C 3619200000 --rfsim"
-            _exec_path="./nr-uesoftmodem.attack"
-            ;;
-		nr-attack-blind)
-			_find_route=false
-			_prefix="NR-UE-Attack-BLIND"
-            _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
-			_usrp_args="type=x300"
-			_tmsi="123456" # change me
-            _attack_args="--blind-dos-attack 300 --RRC-TMSI $_tmsi" # --log_config.nr_mac_log_level debug"
-            _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
-            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
-            ;;
- 		nr-ue-tmsi)
-			_find_route=false
-            _prefix="NR-UE-TMSI"
-            _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue0.uicc.conf"
-            _usrp_args="type=x300"
-            _tmsi="123456" # change me
-            _attack_args="--RRC-TMSI $_tmsi" # --log_config.nr_mac_log_level debug"
-            _common_args="$_attack_args -O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
-            _exec_path="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0 ./nr-uesoftmodem.attack"
-            ;;
-		flexric)
-	    	_exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/ric/nearRT-RIC"
-			$_exec_path
-			exit 0
-			;;
-		flexric-kpm-xapp)
-	    	_exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/xApp/c/monitor/xapp_kpm_moni"
+        flexric)
+            _exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/ric/nearRT-RIC"
             $_exec_path
-	    	exit 0
-	    	;;
+            exit 0
+            ;;
+        flexric-kpm-xapp)
+            _exec_path="$_oai_root/openair2/E2AP/flexric/build/examples/xApp/c/monitor/xapp_kpm_moni"
+            $_exec_path
+            exit 0
+            ;;
         *)
             echo "ERROR: unrecognized option: \"$_arg\"."
             exit 1
