@@ -87,7 +87,6 @@ while [ -n "$1" ]; do
             ;;
         nr-attack)
             _find_route=false
-            shift 1 # take the rest args
             _attack_args=$@
             if $_rfsim; then
                 _prefix="NR-UE-ATTACK-RFSIM"
