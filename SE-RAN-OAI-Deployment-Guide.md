@@ -22,7 +22,25 @@ With OAI-5G, you can deploy eNB / gNB / UE / nrUE. Please pick the corresponding
 ### OAI-5G-Docker
 OAI-5G-Docker (https://github.com/5GSEC/OAI-5G-Docker). This repo contains the necessary configuration files to quickly deploy a 5G network, e.g., locally via RFSIM or USRP, or on Colosseum.
 
-All running instructions are integrated into a single bash script **run.sh** (https://github.com/5GSEC/OAI-5G-Docker/blob/master/colosseum/run.sh)
+All running instructions are integrated into a single bash script **run.sh** (https://github.com/5GSEC/OAI-5G-Docker/blob/master/colosseum/run.sh). There are four different folders with the corresponding pre-defined configurations at the root of OAI-5G-Docker (to save your time):
+
+- ***lte-rfsim***: RF simulated LTE network (no SDR, or USRP required)
+- ***lte-usrp***: RF-based LTE network (works on USRPs)
+- ***nr-rfsim***: RF simulated NR (5G) network
+- ***nr-usrp***: RF-based NR network
+
+It can also be used to run different attack variants (check the script for details).
+
+**Before you use this script, please make sure you have the following paths in run.sh pointing to the correct folders**
+
+```
+_oai_root=/root/OAI-5G
+_oai_config_root=/root/OAI-5G-Docker
+```
+
+By default, the above directories will work on Colosseum. But if you use this script on another machine, please make sure they are correct. Note that some changes may be adapted according to your actual requirement and hardware (e.g., different USRPs).
+
+The remaining files under the colosseum folder (`run_rf.sh `) are only for setting up Colosseum-specific network settings.
 
 
 
