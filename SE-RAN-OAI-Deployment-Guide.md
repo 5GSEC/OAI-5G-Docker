@@ -125,3 +125,41 @@ Similar to the RF SIM deployment, but use the ```nr-usrp``` config folder. Remov
 
 ## Deploy a 5G network on Colosseum
 
+### Step 1 Set up your Colosseum account and connect to VPN
+
+Just follow the official guide from Colosseum and you'll be fine
+
+You can log in to the file-proxy server to examine the docker images we've prepared, such as: 
+
+```
+ls -l /share/nas/<YOUR_ORG>/images
+```
+
+
+### Step 2 Schedule an appointment 
+
+To start your experiment you will need to schedule an appointment via Colosseum's portal. You will need to reserve a number of SRNs, with the following typical settings:
+
+- SRN#1 to deploy the 5G Core, use image ```oai-5gc-img-<DATE>.tar.gz``` 
+- SRN#2 to deploy the gNodeB, use image ```oai-secsm-ran-ue-img-<DATE>.tar.gz```
+- SRN#<3-X> to deploy the nrUEs (each nrUE as an independent SRN), use image ```oai-secsm-ran-ue-img-<DATE>.tar.gz```
+- (Optional) SRN#Y to deploy the attacker nrUE to demonstrate the attacks. Use ```oai-attack-img-<DATE>.tar.gz```
+
+***Please always choose the most recent images (i.e., <DATE>) since they are the most stable ones with the latest features***
+
+
+### Step 3 Deploy the 5G Network
+
+It is similar to how you deploy the RF SIM or RF-based 5G network as described before. 
+
+Before you run the gNB and nrUE, run ```run_rf.sh nr78``` (it should be located under your home folder) only once on any container. The purpose is to configure the Colosseum's RF Emulator to the correct ***RF Scenario*** (otherwise the UEs won't connect to the gNB). ```nr78``` here indicates a band 78 5G network.
+
+For other executions, use ```run.sh``` located in your home folder should be sufficient.
+
+
+
+## Troubleshooting
+
+Please contact Haohuang Wen (wen.423@osu.edu) if you have any questions.
+
+
