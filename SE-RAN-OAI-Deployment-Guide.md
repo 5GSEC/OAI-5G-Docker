@@ -43,9 +43,6 @@ By default, the above directories will work on Colosseum. But if you use this sc
 The remaining files under the colosseum folder (`run_rf.sh set_ip_in_conf.sh set_route_to_cn.py`) are only for setting up Colosseum-specific network settings.
 
 
-
-
-
 ### MobiExpert xApp
 
 Please refer to the repository (https://github.com/5GSEC/mobi-expert-xapp#install-the-mobiexpert-xapp) and the 5G-Spector paper for details (https://web.cse.ohio-state.edu/~wen.423/papers/5G-Spector-NDSS24.pdf).
@@ -62,7 +59,7 @@ Refer to https://github.com/OSUSecLab/5G-Spector
 
 ## Deploy a 5G network w/ RF simulation
 
-To deploy a 5G network w/ RF simulation, you need to first prepare a Linux machine or VM (Ubuntu recommended). Note that OAI may have some restrictions and may not work on latest Ubuntu versions (double check the OAI requirements before you go).
+To deploy a 5G network w/ RF simulation, you need to first prepare a Linux machine or VM (Ubuntu recommended). Note that OAI may have some restrictions and may not work on the latest Ubuntu versions (double-check the OAI requirements before you go).
 
 ### Step 1 Clone Repositories
 
@@ -77,30 +74,53 @@ Run the compilation command: ```./build_oai -I --gNB --nrUE --build-ric-agent -w
 Explanation of the arguments:
 - ```-I``` indicates you will install all dependencies (only when you compile for the first time)
 - ```--gNB``` indicates you will compile gNodeB
-- ```--nrUE`` indicates you will compile nrUE
+- ```--nrUE``` indicates you will compile nrUE
 - ```--build-ric-agent``` indicates you will integrate the support of the ONOS-RIC (only when you choose the compatible branch)
 - ```-w SIMU``` indicates you compile the RF simulation library
 - ```--ninja``` to accelerate the compilation
 
-
 ### Step 3 Deploy the 5GC
 
-Enter OAI-5G-Docker/<config_folder>, e.g., nr-rfsim if you deploy a RF SIM 5G network.
+Enter ```OAI-5G-Docker/<config_folder>```, e.g., nr-rfsim if you deploy a RF SIM 5G network. Then run:
 
 ```
 ./run_5gc.sh
 ```
 
+Please adapt the core network configurations under ```OAI-5G-Docker/<config_folder>``` to your needs.
 
 
+### Step 4 Deploy the gNB
 
+Run
 
-Compilation
+```
+OAI-5G-Docker/colosseum/run.sh gnb rfsim 
+```
+
+### Step 5 Deploy (multiple) nrUEs
+
+Run
+
+```
+OAI-5G-Docker/colosseum/run.sh nrue* rfsim 
+```
+
+```*``` indicates the index of UE (chosen from 0-9)
+
 
 
 ## Deploy a 5G network w/ SDRs (USRP B210s)
 
-VM 
+### Compilation
+
+Run the compilation command: ```./build_oai -I --gNB --nrUE --build-ric-agent -w USRP --ninja --noavx512```
+
+Use ```-w USRP``` instead of ```-W SIMU```
+
+### Deployment
+
+Similar to the RF SIM deployment, but use the ```nr-usrp``` config folder. Remove the ```rfsim``` argument when running the gNB and nrUE.
 
 
 ## Deploy a 5G network on Colosseum
