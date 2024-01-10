@@ -145,7 +145,7 @@ To start your experiment you will need to schedule an appointment via Colosseum'
 - SRN#<3-X> to deploy the nrUEs (each nrUE as an independent SRN), use image ```oai-secsm-ran-ue-img-<DATE>.tar.gz```
 - (Optional) SRN#Y to deploy the attacker nrUE to demonstrate the attacks. Use ```oai-attack-img-<DATE>.tar.gz```
 
-***Please always choose the most recent images (i.e., <DATE>) since they are the most stable ones with the latest features***
+***Please always choose the most recent images according to the DATE postfix since they are the most stable ones with the latest features***
 
 
 ### Step 3 Deploy the 5G Network
