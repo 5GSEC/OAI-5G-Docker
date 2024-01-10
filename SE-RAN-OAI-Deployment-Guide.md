@@ -62,7 +62,38 @@ Refer to https://github.com/OSUSecLab/5G-Spector
 
 ## Deploy a 5G network w/ RF simulation
 
-VM
+To deploy a 5G network w/ RF simulation, you need to first prepare a Linux machine or VM (Ubuntu recommended). Note that OAI may have some restrictions and may not work on latest Ubuntu versions (double check the OAI requirements before you go).
+
+### Step 1 Clone Repositories
+
+Clone the OAI-5G and OAI-5G-Docker repo.
+
+### Step 2 Compile the OAI gNB and nrUE binaries
+
+Enter the directory: ```cd OAI-5G/cmake_targets```
+
+Run the compilation command: ```./build_oai -I --gNB --nrUE --build-ric-agent -w SIMU --ninja --noavx512```
+
+Explanation of the arguments:
+- ```-I``` indicates you will install all dependencies (only when you compile for the first time)
+- ```--gNB``` indicates you will compile gNodeB
+- ```--nrUE`` indicates you will compile nrUE
+- ```--build-ric-agent``` indicates you will integrate the support of the ONOS-RIC (only when you choose the compatible branch)
+- ```-w SIMU``` indicates you compile the RF simulation library
+- ```--ninja``` to accelerate the compilation
+
+
+### Step 3 Deploy the 5GC
+
+Enter OAI-5G-Docker/<config_folder>, e.g., nr-rfsim if you deploy a RF SIM 5G network.
+
+```
+./run_5gc.sh
+```
+
+
+
+
 
 Compilation
 
