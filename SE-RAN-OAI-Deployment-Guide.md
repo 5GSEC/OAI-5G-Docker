@@ -40,7 +40,7 @@ _oai_config_root=/root/OAI-5G-Docker
 
 By default, the above directories will work on Colosseum. But if you use this script on another machine, please make sure they are correct. Note that some changes may be adapted according to your actual requirement and hardware (e.g., different USRPs).
 
-The remaining files under the colosseum folder (`run_rf.sh set_ip_in_conf.sh set_route_to_cn.py`) are only for setting up Colosseum-specific network settings.
+The remaining files under the colosseum folder (`run_rf.sh` `set_ip_in_conf.sh` `set_route_to_cn.py`) are only for setting up Colosseum-specific network settings.
 
 
 ### MobiExpert xApp
@@ -163,14 +163,14 @@ OAI-5G (https://github.com/5GSEC/OAI-5G) contains two branches for demonstrating
 To compile, simply run (for LTE networks):
 ```
 cd OAI-5G
-checkout lte.attack
+git checkout lte.attack
 ./EKBuildOAIUE.sh att lte
 ```
 
 For 5G networks, run:
 ```
 cd OAI-5G
-checkout nr.attack
+git checkout nr.attack
 ./EKBuildOAIUE.sh att nr
 ```
 
