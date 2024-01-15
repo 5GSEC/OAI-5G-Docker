@@ -109,7 +109,6 @@ OAI-5G-Docker/colosseum/run.sh nrue* rfsim
 ```*``` indicates the index of UE (chosen from 0-9)
 
 
-
 ## Deploy a 5G network w/ SDRs (USRP B210s)
 
 ### Compilation
@@ -156,6 +155,41 @@ Before you run the gNB and nrUE, run ```run_rf.sh nr78``` (it should be located 
 
 For other executions, use ```run.sh``` located in your home folder should be sufficient.
 
+
+## Exploitation Testing
+
+OAI-5G (https://github.com/5GSEC/OAI-5G) contains two branches for demonstrating a number of Layer-3 attacks (see https://github.com/5GSEC/OAI-5G/blob/lte.attack/common/attacks/attack_cliopts.h and the 5G-Spector paper for the options). They can run on both LTE networks and 5G networks. 
+
+To compile, simply run (for LTE networks):
+```
+cd OAI-5G
+checkout lte.attack
+./EKBuildOAIUE.sh att lte
+```
+
+For 5G networks, run:
+```
+cd OAI-5G
+checkout nr.attack
+./EKBuildOAIUE.sh att nr
+```
+
+You may need to modify this line (https://github.com/5GSEC/OAI-5G/blob/nr.attack/EKBuildOAIUE.sh#L98) if you want to compile the attack binaries in other modes (e.g., ```-w SIMU```). Kudos to Martin Fong @ SRI for providing this script. 
+
+You can then use the ```run.sh``` script to run the attacks, by specifying the attack parameters. For example:
+
+```
+./run.sh nr-attack rfsim --bts-attack 300 --bts-delay 100
+```
+
+Again, please refer to https://github.com/5GSEC/OAI-5G/blob/lte.attack/common/attacks/attack_cliopts.h to learn about the supported exploits.
+
+
+
+TODO:
+- Modularize the attack implementations with vendor-independent scripts and libraries. Refer to the 5Ghoul framework (https://github.com/asset-group/5ghoul-5g-nr-attacks)
+- Better attack and parameter descriptions
+- More attacks
 
 
 ## Troubleshooting
