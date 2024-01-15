@@ -156,6 +156,13 @@ Before you run the gNB and nrUE, run ```run_rf.sh nr78``` (it should be located 
 For other executions, use ```run.sh``` located in your home folder should be sufficient.
 
 
+### Kubernetes on Colosseum
+
+As of 2024.1, deploying Kubernetes on Colosseum is still very challenging as Colosseum is a LXC container-based platform, as described in the Colosseum Q&A. As a result, deploying the ONOS-RIC on Colosseum has not been viable so far. One alternative is to deploy FlexRIC that does not require Kubernetes, which is under development.
+
+Another option is to convert the Kubernetes deployment of the ONOS-RIC containers into a pure docker environment.
+
+
 ## Exploitation Testing
 
 OAI-5G (https://github.com/5GSEC/OAI-5G) contains two branches for demonstrating a number of Layer-3 attacks (see https://github.com/5GSEC/OAI-5G/blob/lte.attack/common/attacks/attack_cliopts.h and the 5G-Spector paper for the options). They can run on both LTE networks and 5G networks. 
