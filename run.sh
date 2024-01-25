@@ -75,7 +75,7 @@ while [ -n "$1" ]; do
             _find_route=false
             if $_rfsim; then
                 _prefix="NR-UE-RFSIM"
-                _config_path="$_oai_config_root/nr-rfsim/nrue.uicc.conf"
+                _config_path="$_oai_config_root/nr-rfsim/nr-ues/$_arg.uicc.conf"
                 _common_args="-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 -O $_config_path"
                 _exec_path="./nr-uesoftmodem"
             else
