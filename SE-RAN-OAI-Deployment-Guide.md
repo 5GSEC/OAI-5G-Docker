@@ -2,7 +2,7 @@
 
 This guide provides instructions to quickly deploy an OAI-based 5G network, optionally with the near real-time RIC (nRT-RIC) component and xApps.
 
-## Basic Concepts
+## I. Basic Concepts
 
 We will use the following repositories, some of which are private to SE-RAN members only (assuming you already have access permission). They will be cross-referenced in later description.
 
@@ -22,7 +22,7 @@ With OAI-5G, you can deploy eNB / gNB / UE / nrUE. Please pick the corresponding
 ### OAI-5G-Docker
 OAI-5G-Docker (https://github.com/5GSEC/OAI-5G-Docker). This repo contains the necessary configuration files to quickly deploy a 5G network, e.g., locally via RFSIM or USRP, or on Colosseum.
 
-All running instructions are integrated into a single bash script **run.sh** (https://github.com/5GSEC/OAI-5G-Docker/blob/master/colosseum/run.sh). There are four different folders with the corresponding pre-defined configurations at the root of OAI-5G-Docker (to save your time):
+All running instructions are integrated into a single bash script **run.sh** (https://github.com/5GSEC/OAI-5G-Docker/blob/master/run.sh). There are four different folders with the corresponding pre-defined configurations at the root of OAI-5G-Docker (to save your time):
 
 - ***lte-rfsim***: RF simulated LTE network (no SDR, or USRP required)
 - ***lte-usrp***: RF-based LTE network (works on USRPs)
@@ -52,26 +52,82 @@ TBD / In progress:
 - Decouple telemetry reporting from analytics (e.g., divided into the MobiFlow Auditor (https://github.com/5GSEC/MobiFlow-Auditor), the MobiExpert xApp, and the 5G-DeepWatch xApp (https://github.com/5GSEC/5G-DeepWatch))
 
 
-## Deploy an LTE network w/ RF simulation and 5G-Spector
+## II. Deploy an LTE network w/ RF simulation and 5G-Spector
 
-Refer to https://github.com/OSUSecLab/5G-Spector
+Refer to https://github.com/5GSEC/5G-Spector/wiki/5G%E2%80%90Spector-Artifact-in-a-Simulated-LTE-Network
 
 
-## Deploy a 5G network w/ RF simulation
+## III. Deploy a 5G network w/ RF simulation from scratch
 
 To deploy a 5G network w/ RF simulation, you need to first prepare a Linux machine or VM (Ubuntu recommended). Note that OAI may have some restrictions and may not work on the latest Ubuntu versions (double-check the OAI requirements before you go).
 
-### Step 1 Clone Repositories
+Recommended environment:
 
-Clone the OAI-5G and OAI-5G-Docker repo.
+| Env        		| Value           	|
+| ------------- 	| :-------------: 	|
+| OS         		| Ubuntu 20.04 LTS 	|
+| RAM      		| 8 GB      			|
+| Storage 		| 100 GB				|
 
-### Step 2 Compile the OAI gNB and nrUE binaries
 
-Enter the directory: ```cd OAI-5G/cmake_targets```
+### Step 1 Install dependencies
 
-Run the compilation command: ```./build_oai -I --gNB --nrUE --build-ric-agent -w SIMU --ninja --noavx512```
+#### Install docker
+
+Refer to: https://docs.docker.com/engine/install/ubuntu/
+
+You can add your user to the docker group to avoid running docker with sudo:
+
+```
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+```
+
+Log back in to let this take effect.
+
+#### Install docker compose standalone:
+
+Refer to: https://docs.docker.com/compose/install/standalone/
+
+You might need to add execution permission to it:
+
+```
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+
+
+### Step 2 Deploy an OAI 5G network
+
+
+#### 2.1 Clone Repositories
+
+Clone the OAI-5G and OAI-5G-Docker repos.
+
+```
+git clone https://github.com/5GSEC/OAI-5G.git
+git clone https://github.com/5GSEC/OAI-5G-Docker.git
+```
+
+#### 2.2 Compile the OAI gNB and nrUE binaries
+
+Check out the correct branch
+
+```
+cd OAI-5G
+git checkout 2023.w23.secsm.sdran
+```
+
+Enter the directory: 
+
+```cd OAI-5G/cmake_targets```
+
+Run the compilation command: 
+
+```./build_oai -I --gNB --nrUE --build-ric-agent -w SIMU --ninja --noavx512```
 
 Explanation of the arguments:
+
 - ```-I``` indicates you will install all dependencies (only when you compile for the first time)
 - ```--gNB``` indicates you will compile gNodeB
 - ```--nrUE``` indicates you will compile nrUE
@@ -79,7 +135,9 @@ Explanation of the arguments:
 - ```-w SIMU``` indicates you compile the RF simulation library
 - ```--ninja``` to accelerate the compilation
 
-### Step 3 Deploy the 5GC
+The compilation takes a while. After a successful compilation, you will find `nr-softmodem` and `nr-uesoftmodem` under `<PATH_TO_OAI-5G>/cmake_targets/ran_build/build/`.
+
+#### 2.3 Deploy the 5GC
 
 Enter ```OAI-5G-Docker/<config_folder>```, e.g., nr-rfsim if you deploy a RF SIM 5G network. Then run:
 
@@ -89,27 +147,113 @@ Enter ```OAI-5G-Docker/<config_folder>```, e.g., nr-rfsim if you deploy a RF SIM
 
 Please adapt the core network configurations under ```OAI-5G-Docker/<config_folder>``` to your needs.
 
+Wait to verify OAI 5GC deployment (all containers up and in `healthy` status):
 
-### Step 4 Deploy the gNB
+```
+$ docker ps -a
+CONTAINER ID   IMAGE                                       COMMAND                  CREATED         STATUS                   PORTS                          NAMES
+88ca47d70254   oaisoftwarealliance/trf-gen-cn5g:focal      "/bin/bash -c ' ipta…"   7 minutes ago   Up 6 minutes (healthy)                                  oai-ext-dn
+56c1f343af58   oaisoftwarealliance/oai-spgwu-tiny:v1.5.0   "python3 /openair-sp…"   7 minutes ago   Up 6 minutes (healthy)   2152/udp, 8805/udp             oai-spgwu
+5606bcf24c1e   oaisoftwarealliance/oai-smf:v1.5.0          "python3 /openair-sm…"   7 minutes ago   Up 6 minutes (healthy)   80/tcp, 8080/tcp, 8805/udp     oai-smf
+4ee38fd67d47   oaisoftwarealliance/oai-amf:v1.5.0          "python3 /openair-am…"   7 minutes ago   Up 7 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
+e7c166989cb4   mysql:8.0                                   "docker-entrypoint.s…"   7 minutes ago   Up 7 minutes (healthy)   3306/tcp, 33060/tcp            mysql
+08ed0bea0da3   oaisoftwarealliance/oai-nrf:v1.5.0          "python3 /openair-nr…"   7 minutes ago   Up 7 minutes (healthy)   80/tcp, 9090/tcp               oai-nrf
+
+```
+
+To undeploy the 5GC, run:
+
+```
+./kill.sh
+```
+
+
+#### 2.4 Deploy the gNB
+
+You can create a copy of the `run.sh` script to your working folder with:
+
+```
+cp OAI-5G-Docker/run.sh ~/
+```
+
+Adapt the following lines to the correct system paths to `OAI-5G` and `OAI-5G-Docker` you just crawled.
+
+```
+_oai_root=<PATH_TO_OAI-5G>
+_oai_config_root=<PATH_TO_OAI-5G-Docker>
+```
 
 Run
 
 ```
-OAI-5G-Docker/colosseum/run.sh gnb rfsim 
+sudo ~/run.sh gnb rfsim 
 ```
 
-### Step 5 Deploy (multiple) nrUEs
-
-Run
+To verify GNB is running, you will see repeated log entries:
 
 ```
-OAI-5G-Docker/colosseum/run.sh nrue* rfsim 
+[NR_MAC]   Frame.Slot 128.0
 ```
 
-```*``` indicates the index of UE (chosen from 0-9)
+There will be error message like:
+
+```
+[RIC_AGENT]   ranid 0 connecting to RIC at 192.168.84.144:36421 with IP 192.168.200.21 (my addr: 192.168.200.21)
+```
+
+It can be safely ignored at this momment since we haven't deployed the nRT-RIC yet.
 
 
-## Deploy a 5G network w/ SDRs (USRP B210s)
+#### 2.5 Deploy (multiple) nrUEs
+
+Open a new terminal and run:
+
+```
+sudo ~/run.sh nrue* rfsim 
+```
+
+`*` indicates the index of UE (chosen from 0-9)
+
+Verify the UE is running and connected to the gNB with logs like:
+
+```
+[NAS]   [UE] Received REGISTRATION ACCEPT message
+...
+[NR_PHY]   ============================================
+[NR_PHY]   Harq round stats for Downlink: 16/0/0
+[NR_PHY]   ============================================
+[NR_PHY]   RSRP = -92 dBm
+[NR_PHY]   RSRP = -92 dBm
+[NR_PHY]   RSRP = -41 dBm
+```
+
+Logs and pcaps of each run will be saved at: `/logs/`. The configs of the UEs are available at `OAI-5G-Docker/rfsim/nr-ues`
+
+To verify the UE's data traffic, use the created tunnel `oaitun_ue1`:
+
+```
+ping -I oaitun_ue1 -c 10 www.lemonde.fr
+PING lemonde.map.fastly.net (146.75.82.217) from 12.1.1.5 oaitun_ue1: 56(84) bytes of data.
+64 bytes from 146.75.82.217 (146.75.82.217): icmp_seq=1 ttl=49 time=19.6 ms
+64 bytes from 146.75.82.217 (146.75.82.217): icmp_seq=2 ttl=49 time=20.8 ms
+64 bytes from 146.75.82.217 (146.75.82.217): icmp_seq=3 ttl=49 time=22.8 ms
+64 bytes from 146.75.82.217 (146.75.82.217): icmp_seq=4 ttl=49 time=22.8 ms
+64 bytes from 146.75.82.217 (146.75.82.217): icmp_seq=5 ttl=49 time=20.2 ms
+```
+
+
+### 3 Deploy the nRT-RIC
+
+
+### 4 Deploy 5G-Spector
+
+
+### 5 Exploitation Testing
+
+Refer to [Exploitation Testing](#Exploitation-Testing)
+
+
+## IV. Deploy a 5G network w/ SDRs (USRP B210s)
 
 ### Compilation
 
@@ -122,7 +266,7 @@ Use ```-w USRP``` instead of ```-W SIMU```
 Similar to the RF SIM deployment, but use the ```nr-usrp``` config folder. Remove the ```rfsim``` argument when running the gNB and nrUE.
 
 
-## Deploy a 5G network on Colosseum
+## V. Deploy a 5G network on Colosseum
 
 ### Step 1 Set up your Colosseum account and connect to VPN
 
