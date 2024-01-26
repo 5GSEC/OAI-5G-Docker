@@ -10,6 +10,7 @@ _pcap_args=""
 _pcap_enabled=true
 _find_route=false
 _rfsim=false
+_colosseum=false
 _cmd=""
 _usrp_args="type=x300"
 _colosseum_prefix="numactl --cpunodebind=netdev:usrp0 --membind=netdev:usrp0"
@@ -20,6 +21,8 @@ mkdir -p $_pcap_path
 for arg in "$@"; do
     if [ "$arg" = "rfsim" ]; then
         _rfsim=true
+    elif [ "$arg" = "colosseum" ]; then
+        _colosseum=true
     fi
 done
 
@@ -28,6 +31,8 @@ while [ -n "$1" ]; do
     _arg="$1"; shift
     case "$_arg" in
         rfsim)
+            ;;
+        colosseum)
             ;;
         enb)
             _find_route=true
@@ -119,12 +124,12 @@ while [ -n "$1" ]; do
 done
 
 ## Find route to core
-if $_find_route; then
-    cd /root/
+if $_colosseum && $_find_route; then
+    #cd /root/
     # Add route towards core network
-    python3 /root/set_route_to_cn.py -i col0
+    python3 $_oai_config_root/set_route_to_cn.py -i col0
     # Set IP address of col0 interface as IP to bind to in gNB config file
-    /root/set_ip_in_conf.sh $_config_path
+    $_oai_config_root/set_ip_in_conf.sh $_config_path
 fi
 
 ## Check if pcap is enabled

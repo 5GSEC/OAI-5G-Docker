@@ -34,21 +34,21 @@ services:
         image: oaisoftwarealliance/oai-amf:v1.5.0
         environment:
             - TZ=Europe/paris
-            - MCC=999
-            - MNC=70
+            - MCC=208
+            - MNC=99
             - REGION_ID=128
             - AMF_SET_ID=1
-            - SERVED_GUAMI_MCC_0=999
-            - SERVED_GUAMI_MNC_0=70
+            - SERVED_GUAMI_MCC_0=208
+            - SERVED_GUAMI_MNC_0=99
             - SERVED_GUAMI_REGION_ID_0=128
             - SERVED_GUAMI_AMF_SET_ID_0=1
             - SERVED_GUAMI_MCC_1=460
             - SERVED_GUAMI_MNC_1=11
             - SERVED_GUAMI_REGION_ID_1=10
             - SERVED_GUAMI_AMF_SET_ID_1=1
-            - PLMN_SUPPORT_MCC=999
-            - PLMN_SUPPORT_MNC=70
-            - PLMN_SUPPORT_TAC=0x0001
+            - PLMN_SUPPORT_MCC=208
+            - PLMN_SUPPORT_MNC=99
+            - PLMN_SUPPORT_TAC=0xa000
             # Only one slice is defined (1, 0xFFFFFF).
             - SST_0=1
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
