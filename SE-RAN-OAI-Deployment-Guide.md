@@ -244,6 +244,39 @@ PING lemonde.map.fastly.net (146.75.82.217) from 12.1.1.5 oaitun_ue1: 56(84) byt
 
 ### 3 Deploy the nRT-RIC
 
+Pull the SD-RAN in a Box repo:
+
+```
+git clone https://github.com/onosproject/sdran-in-a-box
+```
+
+Deploy the nRT-RIC component:
+
+```
+cd sdran-in-a-box
+make OPT=ric
+```
+
+It takes a while to deploy. To verify, make sure all the pods and their containers are in `Running` status.
+
+```
+$ kubectl get pods -n riab
+NAME                           READY   STATUS    RESTARTS   AGE
+onos-a1t-68c59fb46-bfpks       2/2     Running   0          2m25s
+onos-cli-c7d5b54b4-vjkxm       1/1     Running   0          2m25s
+onos-config-5786dbc85c-pxf2s   3/3     Running   0          2m25s
+onos-e2t-5798f554b7-znjf7      2/2     Running   0          2m25s
+onos-kpimon-555c9fdb5c-jx2bb   2/2     Running   0          2m25s
+onos-rsm-7b6d84b5fc-cnkpc      2/2     Running   0          2m25s
+onos-topo-6b59c97579-d54pm     2/2     Running   0          2m25s
+onos-uenib-6f65dc66b4-jz6zm    2/2     Running   0          2m25s
+sd-ran-consensus-0             1/1     Running   0          2m25s
+sd-ran-consensus-1             1/1     Running   0          2m25s
+sd-ran-consensus-2             1/1     Running   0          2m25s
+```
+
+To undeploy, simply `make reset-ric`, or `make reset-test` to clean the whole environment.
+
 
 ### 4 Deploy 5G-Spector
 
