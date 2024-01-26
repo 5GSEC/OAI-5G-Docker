@@ -242,7 +242,7 @@ PING lemonde.map.fastly.net (146.75.82.217) from 12.1.1.5 oaitun_ue1: 56(84) byt
 ```
 
 
-### 3 Deploy the nRT-RIC
+### Step 3 Deploy the nRT-RIC
 
 Pull the SD-RAN in a Box repo:
 
@@ -250,7 +250,7 @@ Pull the SD-RAN in a Box repo:
 git clone https://github.com/onosproject/sdran-in-a-box
 ```
 
-Deploy the nRT-RIC component:
+#### Deploy nRT-RIC
 
 ```
 cd sdran-in-a-box
@@ -277,13 +277,46 @@ sd-ran-consensus-2             1/1     Running   0          2m25s
 
 To undeploy, simply `make reset-ric`, or `make reset-test` to clean the whole environment.
 
+#### Update gNB config
 
-### 4 Deploy 5G-Spector
+Exit the running gNB and nrUE. Update the `gnb.conf` config file in `OAI-5G-Docker/nr-rfsim`:
+
+```
+# Begin RIC-specific settings
+    RIC : {
+        remote_ipv4_addr = "<E2T_ADDRESS>"; # TODO Replace it with the actual RIC e2t Address
+        remote_port = 36421;
+        enabled = "yes";
+    };
+```
+
+Replace the `remote_ipv4_addr ` value with the address of the `onos-e2t` pod, which can be obtained with:
+
+```
+kubectl get po -n riab -o wide | grep onos-e2t | awk '{print $6}'
+```
+
+After the update, the previous error message in the gNB log should be gone. Instead, you will see the following logs indicating successful connection to the RIC:
+
+```
+[RIC_AGENT]   ranid 0 connecting to RIC at 192.168.84.148:36421 with IP 192.168.200.21 (my addr: 192.168.200.21)
+[RIC_AGENT]   new sctp assoc resp 4, sctp_state 2 for nb 0
+[RIC_AGENT]   new sctp assoc resp 4 for nb 0
+[RIC_AGENT]   Send SCTP data, ranid:0, assoc_id:4, len:616
+[RIC_AGENT]   decoded successful outcome E2SetupResponse (1)
+...
+```
 
 
-### 5 Exploitation Testing
+### Step 4 Deploy 5G-Spector
+
+
+### Step 5 Exploitation Testing
 
 Refer to [Exploitation Testing](#Exploitation-Testing)
+
+
+### Step 6 Programming the MobiExpert xApp with P-Best
 
 
 ## IV. Deploy a 5G network w/ SDRs (USRP B210s)
