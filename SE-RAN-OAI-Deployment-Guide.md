@@ -283,14 +283,14 @@ Exit the running gNB and nrUE. Update the `gnb.conf` config file in `OAI-5G-Dock
 
 ```
 # Begin RIC-specific settings
-    RIC : {
-        remote_ipv4_addr = "<E2T_ADDRESS>"; # TODO Replace it with the actual RIC e2t Address
-        remote_port = 36421;
-        enabled = "yes";
-    };
+RIC : {
+    remote_ipv4_addr = "<E2T_ADDRESS>"; # TODO Replace it with the actual RIC e2t Address
+    remote_port = 36421;
+    enabled = "yes";
+};
 ```
 
-Replace the `remote_ipv4_addr ` value with the address of the `onos-e2t` pod, which can be obtained with:
+Replace the `remote_ipv4_addr` value with the address of the `onos-e2t` pod, which can be obtained with:
 
 ```
 kubectl get po -n riab -o wide | grep onos-e2t | awk '{print $6}'
@@ -309,6 +309,89 @@ After the update, the previous error message in the gNB log should be gone. Inst
 
 
 ### Step 4 Deploy 5G-Spector
+
+Create local docker registry to host the built xApp containers:
+
+```
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+
+
+#### Deploy the MobiFlow Auditor xApp
+
+```
+git clone https://github.com/5GSEC/MobiFlow-Auditor.git
+```
+
+Build the xApp docker container:
+
+```
+cd mobi-expert-xapp
+./build.sh
+```
+
+Deploy the xApp to the `riab` RIC namespace:
+
+```
+./install_xapp.sh
+```
+
+Successful xApp deployment will show the following repeated log entries:
+
+```
+INFO 2024-01-30 13:16:24 web_log.py:206] 192.168.121.113 [30/Jan/2024:13:16:24 +0000] "GET /status HTTP/1.1" 200 180 "-" "kube-probe/1.23"
+INFO 2024-01-30 13:16:24 web_log.py:206] 192.168.121.113 [30/Jan/2024:13:16:24 +0000] "GET /status HTTP/1.1" 200 180 "-" "kube-probe/1.23"
+...
+``` 
+
+To undeploy the xApp:
+
+```
+./uninstall_xapp.sh
+```
+
+For details, visit https://github.com/5GSEC/MobiFlow-Auditor
+
+
+#### Deploy the MobiExpert xApp
+
+```
+git clone https://github.com/5GSEC/mobi-expert-xapp.git
+```
+
+Build the xApp docker container:
+
+```
+cd mobi-expert-xapp
+./build.sh
+```
+
+Deploy the xApp to the `riab` RIC namespace:
+
+```
+./install_xapp.sh
+```
+
+Successful xApp deployment will show the following logs:
+
+```
+INFO 2024-01-30 13:16:17 mobiflow_reader.py:18] [App] MobiFlow RPC server config mobiflow-auditor.riab.svc.cluster.local:50051 interval 500
+INFO 2024-01-30 13:16:17 mobiflow_reader.py:22] [App] Starting MobiFlow reading thread
+INFO 2024-01-30 13:16:17 mobiflow_reader.py:26] [App] Starting Maintenance thread
+PBEST runtime library built  Fri 26 Jan 2024 07:14:29 PM UTC
+INFO 2024-01-30 13:16:17 pbest.py:40] PBest process started!
+``` 
+
+To undeploy the xApp:
+
+```
+./uninstall_xapp.sh
+```
+
+For details, visit https://github.com/5GSEC/mobi-expert-xapp
+
+After MobiFlow-Auditor and MobiExpert has been deployed, you may refer to the previous tutorials to deploy and test them with OAI gNB and nrUEs to generate real cellular traffic. You may also perform exploitation testing.
+
 
 
 ### Step 5 Exploitation Testing
