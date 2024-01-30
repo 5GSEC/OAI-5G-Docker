@@ -3,6 +3,7 @@
 _config_path=""
 _oai_root=/root/OAI-5G
 _oai_config_root=/root/OAI-5G-Docker
+_oai_attack_root=/root/OAI-5G
 _log_path=/logs/logs
 _pcap_path=/logs/pcaps
 _prefix=""
@@ -93,6 +94,7 @@ while [ -n "$1" ]; do
         nr-attack)
             _find_route=false
             _attack_args=$@
+            _oai_root=$_oai_attack_root
             if $_rfsim; then
                 _prefix="NR-UE-ATTACK-RFSIM"
                 _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
