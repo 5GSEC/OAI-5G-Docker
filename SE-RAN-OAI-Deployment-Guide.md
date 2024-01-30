@@ -363,10 +363,11 @@ Build the xApp docker container:
 
 ```
 cd mobi-expert-xapp
+git checkout pbest
 ./build.sh
 ```
 
-Deploy the xApp to the `riab` RIC namespace:
+Please make sure the MobiFlow-Auditor xApp is up and running. Deploy the xApp to the `riab` RIC namespace:
 
 ```
 ./install_xapp.sh
@@ -460,26 +461,31 @@ Another option is to convert the Kubernetes deployment of the ONOS-RIC container
 
 OAI-5G (https://github.com/5GSEC/OAI-5G) contains two branches for demonstrating a number of Layer-3 attacks (see https://github.com/5GSEC/OAI-5G/blob/lte.attack/common/attacks/attack_cliopts.h and the 5G-Spector paper for the options). They can run on both LTE networks and 5G networks. 
 
-To compile, simply run (for LTE networks):
+To get started, clone the OAI-5G repo:
+
 ```
-cd OAI-5G
+git clone https://github.com/5GSEC/OAI-5G attack-OAI
+cd attack-OAI
+```
+
+For LTE networks:
+```
 git checkout lte.attack
-./EKBuildOAIUE.sh att lte
+cd cmake_targets
+./build_oai --UE -w SIMU --ninja --noavx512
 ```
 
 For 5G networks, run:
 ```
-cd OAI-5G
 git checkout nr.attack
-./EKBuildOAIUE.sh att nr
+cd cmake_targets
+./build_oai --nrUE -w SIMU --ninja --noavx512
+``` 
+
+You can then use the ```run.sh``` script to run the attacks, by specifying the attack parameters. Before that, you need to configure the `_oai_attack_root` to point to the exploit OAI folder you just now cloned. Next you can run the attacks with the script, for example:
+
 ```
-
-You may need to modify this line (https://github.com/5GSEC/OAI-5G/blob/nr.attack/EKBuildOAIUE.sh#L98) if you want to compile the attack binaries in other modes (e.g., ```-w SIMU```). Kudos to Martin Fong @ SRI for providing this script. 
-
-You can then use the ```run.sh``` script to run the attacks, by specifying the attack parameters. For example:
-
-```
-./run.sh nr-attack rfsim --bts-attack 300 --bts-delay 100
+./run.sh rfsim nr-attack --bts-attack 300 --bts-delay 100
 ```
 
 Again, please refer to https://github.com/5GSEC/OAI-5G/blob/lte.attack/common/attacks/attack_cliopts.h to learn about the supported exploits.
