@@ -49,7 +49,7 @@ Please refer to the repository (https://github.com/5GSEC/mobi-expert-xapp#instal
 
 TBD / In progress:
 - Open source
-- Decouple telemetry reporting from analytics (e.g., divided into the MobiFlow Auditor (https://github.com/5GSEC/MobiFlow-Auditor), the MobiExpert xApp, and the 5G-DeepWatch xApp (https://github.com/5GSEC/5G-DeepWatch))
+- Decouple telemetry reporting from analytics
 
 
 ## II. Deploy an LTE network w/ RF simulation and 5G-Spector
