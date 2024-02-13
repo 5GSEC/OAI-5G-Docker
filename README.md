@@ -1,5 +1,7 @@
 # OAI-5G-Docker
 
+This repository stores the configuration files to build OAI LTE / 5G networks.
+
 ## OAI compile
 
 Build with ONOS SD-RAN RIC Agent
