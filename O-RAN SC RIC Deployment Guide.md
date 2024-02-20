@@ -381,3 +381,115 @@ RIC : {
 
 ## Non-RT-RIC
 
+Adapted from [https://docs.o-ran-sc.org/projects/o-ran-sc-nonrtric/en/latest/installation-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-nonrtric/en/latest/installation-guide.html)
+
+First, clone to repo:
+
+```
+git clone "https://gerrit.o-ran-sc.org/r/it/dep"
+```
+
+Or clone a specific release branch:
+
+```
+git clone "https://gerrit.o-ran-sc.org/r/it/dep" -b h-release
+```
+
+Configuration of components to install, edit `dep/RECIPE_EXAMPLE/NONRTRIC/example_recipe.yaml` to configure your settings.
+
+The file shown below is a snippet from the override `example_recipe.yaml`.
+
+All parameters beginning with 'install' can be configured 'true' for enabling installation and 'false' for disabling installation.
+
+For the parameters installNonrtricgateway and installKong, only one can be enabled.
+
+There are many other parameters in the file that may require adaptation to fit a certain environment. For example hostname, namespace and port to message router etc. These integration details are not covered in this guide.  
+
+```
+nonrtric:
+  installPms: true
+  installA1controller: true
+  installA1simulator: true
+  installControlpanel: true
+  installInformationservice: true
+  installRappcatalogueservice: true
+  installRappcatalogueEnhancedservice: true
+  installNonrtricgateway: true
+  installKong: false
+  installDmaapadapterservice: true
+  installDmaapmediatorservice: true
+  installHelmmanager: true
+  installOruclosedlooprecovery: true
+  installOdusliceassurance: true
+  installCapifcore: true
+  installRanpm: true
+  installrappmanager: true
+  installdmeparticipant: true
+   
+   volume1:
+    # Set the size to 0 if you do not need the volume (if you are using Dynamic Volume Provisioning)
+    size: 2Gi
+    storageClassName: pms-storage
+  volume2:
+     # Set the size to 0 if you do not need the volume (if you are using Dynamic Volume Provisioning)
+    size: 2Gi
+    storageClassName: ics-storage
+  volume3:
+    size: 1Gi
+    storageClassName: helmmanager-storage
+ 
+...
+...
+...
+```
+
+For installation, run:
+
+```
+cd dep
+sudo bin/deploy-nonrtric -f nonrtric/RECIPE_EXAMPLE/example_recipe.yaml
+```
+
+Verify the non RT RIC has been deployed:
+
+
+```
+$ sudo kubectl get po -n nonrtric
+            NAME                                                 READY     STATUS     RESTARTS            AGE 
+bundle-server-7f5c4965c7-vsgn7                                    1/1     Running        0               8m16s
+dfc-0                                                             2/2     Running        0               6m31s
+influxdb2-0                                                       1/1     Running        0               8m15s
+informationservice-776f789967-dxqrj                               1/1     Running        0               6m32s
+kafka-1-entity-operator-fcb6f94dc-fkx8z                           3/3     Running        0               7m17s
+kafka-1-kafka-0                                                   1/1     Running        0               7m43s
+kafka-1-zookeeper-0                                               1/1     Running        0               8m7s
+kafka-client                                                      1/1     Running        0               10m
+kafka-producer-pm-json2influx-0                                   1/1     Running        0               6m32s
+kafka-producer-pm-json2kafka-0                                    1/1     Running        0               6m32s
+kafka-producer-pm-xml2json-0                                      1/1     Running        0               6m32s
+keycloak-597d95bbc5-nsqww                                         1/1     Running        0               10m
+keycloak-proxy-57f6c97984-hl2b6                                   1/1     Running        0               10m
+message-router-7d977b5554-8tp5k                                   1/1     Running        0               8m15s
+minio-0                                                           1/1     Running        0               8m15s
+minio-client                                                      1/1     Running        0               8m16s
+opa-ics-54fdf87d89-jt5rs                                          1/1     Running        0               6m32s
+opa-kafka-6665d545c5-ct7dx                                        1/1     Running        0               8m16s
+opa-minio-5d6f5d89dc-xls9s                                        1/1     Running        0               8m16s
+pm-producer-json2kafka-0                                          2/2     Running        0               6m32s
+pm-rapp                                                           1/1     Running        0               67s
+pmlog-0                                                           2/2     Running        0               82s
+redpanda-console-b85489cc9-nqqpm                                  1/1     Running        0               8m15s
+strimzi-cluster-operator-57c7999494-kvk69                         1/1     Running        0               8m53s
+ves-collector-bd756b64c-wz28h                                     1/1     Running        0               8m16s
+zoo-entrance-85878c564d-59gp2                                     1/1     Running        0               8m16s
+```
+
+
+To uninstall, run:
+
+```
+sudo bin/undeploy-nonrtric
+```
+
+
+
