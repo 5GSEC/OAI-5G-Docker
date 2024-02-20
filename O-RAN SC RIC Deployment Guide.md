@@ -251,9 +251,23 @@ namespace "ricplt" deleted
 ```
 
 
+### Demo Video by OSC
+
+Integration of OSC RIC and xApps with E2 simulation (I Release):
+
+[https://wiki.o-ran-sc.org/download/attachments/78217540/deploy_h_release_near_rt_ric.mp4?api=v2](https://wiki.o-ran-sc.org/download/attachments/78217540/deploy_h_release_near_rt_ric.mp4?api=v2)
+
+OAI demo with OSC:
+
+[https://wiki.o-ran-sc.org/display/EV/Material+for+O-RAN+October+f2f+in+Phoenix](https://wiki.o-ran-sc.org/display/EV/Material+for+O-RAN+October+f2f+in+Phoenix)
+
+
+
 ## Connect OAI gNB to OSC RIC
 
-### Connect OAI gNB to OSC nRT-RIC
+### OAI E2 Agent
+
+Clone and compile the OAI's official repository from [https://gitlab.eurecom.fr/oai/openairinterface5g/](https://gitlab.eurecom.fr/oai/openairinterface5g/) and compile it. Remember to specify the `--build-e2` arg.
 
 Obtain the E2T's service IP address and port from the deployed RIC:
 
@@ -271,7 +285,7 @@ Update the OAI gNB config to specify the E2T IP:
 
 ```
 e2_agent = {
-  near_ric_ip_addr = "10.111.203.170"; #"127.0.0.1";
+  near_ric_ip_addr = "10.111.203.170";
   sm_dir = "/usr/local/lib/flexric/"
 }
 ```
@@ -335,6 +349,32 @@ $ curl -X GET http://10.96.118.190:3800/v1/nodeb/states 2>/dev/null|jq
     "connectionStatus": "DISCONNECTED"
   }
 ]
+```
+
+
+### ONOS E2 Agent
+
+Clone the `OAI-5G` repository from [https://github.com/5GSEC/OAI-5G](https://github.com/5GSEC/OAI-5G). Then compile OAI. Be sure to include the `--build-ric-agent` arg.
+
+Similar to how we set up with the OAI E2 agent. Obtain the E2T's service IP address and port from the deployed RIC:
+
+```
+$ sudo kubectl get svc -n ricplt
+NAME                                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                           AGE
+...
+service-ricplt-e2term-sctp-alpha            NodePort    10.111.203.170   <none>        36422:32222/SCTP                  67s
+...
+```
+
+Update the OAI gNB config to specify the E2T IP:
+
+```
+# Begin RIC-specific settings
+RIC : {
+    remote_ipv4_addr = "10.111.197.150"; # TODO Replace it with the actual RIC e2t Address
+    remote_port = 36422;
+    enabled = "yes";
+};
 ```
 
 
