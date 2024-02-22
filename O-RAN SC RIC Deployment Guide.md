@@ -64,6 +64,21 @@ docker-credential:
         email: ""
 ```
 
+Adapt the `e2mgr` config by specifying the `mcc` and `mnc` value to your gNB's:
+
+```
+e2mgr:
+  image:
+    registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
+    name: ric-plt-e2mgr
+    tag: 6.0.4
+  privilegedmode: false
+  globalRicId:
+    ricId: "AACCE"
+    mcc: "208"
+    mnc: "99"
+```
+
 For more advanced recipe configuration options, please refer to the recipe configuration guideline.
 
 ### Installing the RIC
@@ -80,7 +95,7 @@ sudo ./install -f ../RECIPE_EXAMPLE/example_recipe_latest_stable.yaml
 Now check the deployment status after a short wait. Results similar to the output shown below indicate a complete and successful deployment. Check the STATUS column from both kubectl outputs to ensure that all are either “Completed” or “Running”, and that none are “Error” or “ImagePullBackOff”.
 
 ```
-# sudo helm list
+# sudo helm list -A
 NAME                  REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE
 r3-a1mediator         1               Thu Jan 23 14:29:12 2020        DEPLOYED        a1mediator-3.0.0        1.0             ricplt
 r3-appmgr             1               Thu Jan 23 14:28:14 2020        DEPLOYED        appmgr-3.0.0            1.0             ricplt
@@ -251,21 +266,64 @@ namespace "ricplt" deleted
 ```
 
 
-### Demo Video by OSC
-
-Integration of OSC RIC and xApps with E2 simulation (I Release):
-
-[https://wiki.o-ran-sc.org/download/attachments/78217540/deploy_h_release_near_rt_ric.mp4?api=v2](https://wiki.o-ran-sc.org/download/attachments/78217540/deploy_h_release_near_rt_ric.mp4?api=v2)
-
-OAI demo with OSC:
-
-[https://wiki.o-ran-sc.org/display/EV/Material+for+O-RAN+October+f2f+in+Phoenix](https://wiki.o-ran-sc.org/display/EV/Material+for+O-RAN+October+f2f+in+Phoenix)
-
-
-
 ## Connect OAI gNB to OSC RIC
 
+You may use OAI with either the ONOS E2 agent or the OAI E2 agent to connect with the OSC nRT-RIC. 
+
+### ONOS E2 Agent
+
+Clone the `OAI-5G` repository from [https://github.com/5GSEC/OAI-5G](https://github.com/5GSEC/OAI-5G). Then compile OAI. Be sure to include the `--build-ric-agent` arg:
+
+```
+cd <OAI-ROOT>/cmake_targets
+./build_oai -w SIMU --gNB --nrUE --build-ric-agent --ninja
+```
+
+Obtain the E2T's service IP address and port from the deployed RIC:
+
+```
+$ sudo kubectl get svc -n ricplt
+NAME                                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                           AGE
+...
+service-ricplt-e2term-sctp-alpha            NodePort    10.111.203.170   <none>        36422:32222/SCTP                  67s
+...
+```
+
+Update the OAI gNB config to specify the E2T IP:
+
+```
+# Begin RIC-specific settings
+RIC : {
+    remote_ipv4_addr = "10.111.197.150"; # TODO Replace it with the actual RIC e2t Address
+    remote_port = 36422;
+    enabled = "yes";
+};
+```
+
+Also, update the `local_s_address` field to the public host IP running the gNB.
+
+```
+local_s_address  = "192.168.121.191";
+```
+
+Next, follow the tutorial in [https://github.com/5GSEC/5G-Spector/wiki/Build-5G%E2%80%90Spector-from-scratch-in-an-OAI-5G-network](https://github.com/5GSEC/5G-Spector/wiki/Build-5G%E2%80%90Spector-from-scratch-in-an-OAI-5G-network) to run OAI gNB in RFSIM mode.
+
+Success indication of E2 Setup procedure from the gNB log:
+
+```
+[RIC_AGENT]   ranid 0 connecting to RIC at 10.106.85.115:36422 with IP 192.168.121.191 (my addr: 192.168.121.191)
+[RIC_AGENT]   new sctp assoc resp 171, sctp_state 2 for nb 0
+[RIC_AGENT]   new sctp assoc resp 171 for nb 0
+[RIC_AGENT]   Send SCTP data, ranid:0, assoc_id:171, len:616
+[RIC_AGENT]   decoded successful outcome E2SetupResponse (1)
+[RIC_AGENT]   Received E2SetupResponse (ranid 0)
+[RIC_AGENT]   E2SetupResponse (ranid 0) from RIC (mcc=310,mnc=141,id=0)
+```
+
+
 ### OAI E2 Agent
+
+**WARNING: currently running OAI baremetal will cause the E2 agent to release the E2 connection immediately. Binding logic is needed to stablize the connection.**
 
 Clone and compile the OAI's official repository from [https://gitlab.eurecom.fr/oai/openairinterface5g/](https://gitlab.eurecom.fr/oai/openairinterface5g/) and compile it. Remember to specify the `--build-e2` arg.
 
@@ -290,13 +348,13 @@ e2_agent = {
 }
 ```
 
-Specify the port number in OAI. This is current hardcoded (as of v2.0.1 version) within the OAI's E2 agent. Locate file at `<OAI-ROOT>/openair2/E2AP/flexric/src/agent/e2_agent_api.c` and adapt the following line:
+Specify the port number in OAI. This is currently hardcoded (as of v2.0.1 version) within the OAI's E2 agent. Locate file at `<OAI-ROOT>/openair2/E2AP/flexric/src/agent/e2_agent_api.c` and adapt the following line:
 
 ```
 const int e2ap_server_port = 36421;
 ``` 
 
-Then recompile OAI:
+Then compile OAI:
 
 ```
 cd <OAI-ROOT>/cmake_targets
@@ -312,20 +370,20 @@ Rerun the gNB and you'll see E2 Setup Request and response from the log:
 [E2-AGENT]: Transaction ID E2 SETUP-REQUEST 0 E2 SETUP-RESPONSE 0
 ```
 
+### Verification on the nRT-RIC
+
 Indication from the E2T pod (replace the actual pod name with yours):
 
 ```
 $ sudo kubectl logs deployment-ricplt-e2term-alpha-5dc768bcb7-kqfvz -n ricplt
 ...
-{"ts":1708289046752,"crit":"INFO","id":"E2Terminator","mdc":{"PID":"140457342383872","POD_NAME":"deployment-ricplt-e2term-alpha-5dc768bcb7-kqfvz","CONTAINER_NAME":"container-ricplt-e2term","SERVICE_NAME":"RIC_E2_TERM","HOST_NAME":"o-ran-sc-test","SYSTEM_NAME":"SEP"},"msg":"New connection request from sctp network "}
-{"ts":1708289046752,"crit":"INFO","id":"E2Terminator","mdc":{"PID":"140457333991168","POD_NAME":"deployment-ricplt-e2term-alpha-5dc768bcb7-kqfvz","CONTAINER_NAME":"container-ricplt-e2term","SERVICE_NAME":"RIC_E2_TERM","HOST_NAME":"o-ran-sc-test","SYSTEM_NAME":"SEP"},"msg":"New connection request from sctp network "}
+{"ts":1708618899379,"crit":"INFO","id":"E2Terminator","mdc":{"PID":"140212327921408","POD_NAME":"deployment-ricplt-e2term-alpha-5dc768bcb7-q5mbc","CONTAINER_NAME":"container-ricplt-e2term","SERVICE_NAME":"RIC_E2_TERM","HOST_NAME":"o-ran-sc-test","SYSTEM_NAME":"SEP"},"msg":"New connection request from sctp network "}
 
 gNB_CU_UP_ID and gNB_DU_ID is null
 cuupid =-1
 duid =-1
 ranName =gnb_208_099_00000e00
-{"ts":1708289046885,"crit":"INFO","id":"E2Terminator","mdc":{"PID":"140457350776576","POD_NAME":"deployment-ricplt-e2term-alpha-5dc768bcb7-kqfvz","CONTAINER_NAME":"container-ricplt-e2term","SERVICE_NAME":"RIC_E2_TERM","HOST_NAME":"o-ran-sc-test","SYSTEM_NAME":"SEP"},"msg":"send message to gnb_208_099_00000e00 address"}
-{"ts":1708289048349,"crit":"ERROR","id":"E2Terminator","mdc":{"PID":"140457333991168","POD_NAME":"deployment-ricplt-e2term-alpha-5dc768bcb7-kqfvz","CONTAINER_NAME":"container-ricplt-e2term","SERVICE_NAME":"RIC_E2_TERM","HOST_NAME":"o-ran-sc-test","SYSTEM_NAME":"SEP"},"msg":"epoll error, events 8 on fd 20, RAN NAME : gnb_208_099_00000e00"}
+{"ts":1708618899415,"crit":"INFO","id":"E2Terminator","mdc":{"PID":"140212344706816","POD_NAME":"deployment-ricplt-e2term-alpha-5dc768bcb7-q5mbc","CONTAINER_NAME":"container-ricplt-e2term","SERVICE_NAME":"RIC_E2_TERM","HOST_NAME":"o-ran-sc-test","SYSTEM_NAME":"SEP"},"msg":"send message to gnb_208_099_00000e00 address"}
 ```
 
 Query E2 node status through the E2 manager APIs. Obtain the IP address of the `e2mgr` service:
@@ -344,37 +402,11 @@ $ curl -X GET http://10.96.118.190:3800/v1/nodeb/states 2>/dev/null|jq
     "inventoryName": "gnb_208_099_00000e00",
     "globalNbId": {
       "plmnId": "02F899",
-      "nbId": "00000000000000000000111000000000"
+      "nbId": "0000000000000000111000000000"
     },
-    "connectionStatus": "DISCONNECTED"
+    "connectionStatus": "CONNECTED"
   }
 ]
-```
-
-
-### ONOS E2 Agent
-
-Clone the `OAI-5G` repository from [https://github.com/5GSEC/OAI-5G](https://github.com/5GSEC/OAI-5G). Then compile OAI. Be sure to include the `--build-ric-agent` arg.
-
-Similar to how we set up with the OAI E2 agent. Obtain the E2T's service IP address and port from the deployed RIC:
-
-```
-$ sudo kubectl get svc -n ricplt
-NAME                                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                           AGE
-...
-service-ricplt-e2term-sctp-alpha            NodePort    10.111.203.170   <none>        36422:32222/SCTP                  67s
-...
-```
-
-Update the OAI gNB config to specify the E2T IP:
-
-```
-# Begin RIC-specific settings
-RIC : {
-    remote_ipv4_addr = "10.111.197.150"; # TODO Replace it with the actual RIC e2t Address
-    remote_port = 36422;
-    enabled = "yes";
-};
 ```
 
 
@@ -492,4 +524,20 @@ sudo bin/undeploy-nonrtric
 ```
 
 
+## Useful Links
+
+About O-RAN SC: [https://wiki.o-ran-sc.org/display/ORAN](https://wiki.o-ran-sc.org/display/ORAN)
+
+Integration of OSC RIC and xApps with E2 simulation (I Release): 
+[https://wiki.o-ran-sc.org/download/attachments/78217540/deploy_h_release_near_rt_ric.mp4?api=v2](https://wiki.o-ran-sc.org/download/attachments/78217540/deploy_h_release_near_rt_ric.mp4?api=v2)
+
+OSC near-RT RIC: 
+[https://wiki.o-ran-sc.org/pages/viewpage.action?pageId=1179659](https://wiki.o-ran-sc.org/pages/viewpage.action?pageId=1179659)
+
+OAI demo with OSC:
+[https://wiki.o-ran-sc.org/display/EV/Material+for+O-RAN+October+f2f+in+Phoenix](https://wiki.o-ran-sc.org/display/EV/Material+for+O-RAN+October+f2f+in+Phoenix)
+
+OSC non-RT RIC (docs & arch & install guide): [https://wiki.o-ran-sc.org/display/RICNR](https://wiki.o-ran-sc.org/display/RICNR)
+
+OSC RIC AI / ML tutorial (H release): [https://wiki.o-ran-sc.org/display/AIMLFEW/Files+for+H+release](https://wiki.o-ran-sc.org/display/AIMLFEW/Files+for+H+release)
 
