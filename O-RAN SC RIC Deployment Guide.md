@@ -232,6 +232,13 @@ OR
 dms_cli onboard --config_file_path=/files/config-file.json --shcema_file_path=/files/schema.json
 ```
 
+### KPI Mon xApp
+
+Clone the xApp:
+
+```
+git clone "https://gerrit.o-ran-sc.org/r/ric-app/kpimon-go"
+```
 
 
 
@@ -522,6 +529,10 @@ To uninstall, run:
 ```
 sudo bin/undeploy-nonrtric
 ```
+
+## OSC AI / ML Framework 
+
+Adapted from [https://docs.o-ran-sc.org/projects/o-ran-sc-aiml-fw-aimlfw-dep/en/latest/installation-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-aiml-fw-aimlfw-dep/en/latest/installation-guide.html)
 
 
 ## Useful Links
