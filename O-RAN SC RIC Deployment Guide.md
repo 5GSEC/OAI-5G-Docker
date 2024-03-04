@@ -204,8 +204,10 @@ apt install python3-pip
 pip3 uninstall xapp_onboarder
 
 #Install xapp_onboarder using following command
-pip3 install ./
+sudo pip3 install ./
 ```
+
+(Note: if you run `kubectl` with `sudo` then you need to install with root user here)
 
 You may need to update the `PATH` env variable to access the executables.
 
@@ -232,6 +234,125 @@ OR
 dms_cli onboard --config_file_path=/files/config-file.json --shcema_file_path=/files/schema.json
 ```
 
+### Hello World Python xApp
+
+Adapted from https://gerrit.o-ran-sc.org/r/gitweb?p=ric-app/hw-python.git;a=blob;f=docs/onboard-and-deploy.rst;h=0308a48e31f108ac7e77701a39ce47d68555f34b;hb=HEAD
+
+First checkout the [hw-python](https://gerrit.o-ran-sc.org/r/ric-app/hw-python) repository from gerrit.
+
+```
+git clone "https://gerrit.o-ran-sc.org/r/ric-app/hw-python"
+```
+
+`hw-python` has following folder structure
+
+```
++---docs
+|
++---hw_python.egg-info
+|
++---init
+|       config-file.json # descriptor for xapp deployment.
+|       init_script.py
+|       test_route.rt
+|       schema.json #schema for validating the config-file.json
+|
++---releases
+|
++---resources
+|
++---src
+```
+
+For onboarding `hw-python` make sure that `dms_cli` and helm3 is installed. One can follow [documentation](https://docs.o-ran-sc.org/projects/o-ran-sc-it-dep/en/latest/installation-guides.html#ric-applications) to configure `dms_cli`.
+
+Once `dms_cli` is availabe we can proceed to onboarding proceure.
+
+
+Check if `dms_cli` working fine:
+```
+$ sudo -E dms_cli health
+True
+```
+
+Now move to `init` folder to initiate onboarding.
+
+```
+$ cd init
+
+$ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
+{
+"status": "Created"
+}
+```
+
+List helm chart:
+
+```
+$ sudo -E dms_cli get_charts_list
+{
+    "hw-python": [
+        {
+            "apiVersion": "v1",
+            "appVersion": "1.0",
+            "created": "2024-03-04T02:13:17.39324061Z",
+            "description": "Standard xApp Helm Chart",
+            "digest": "30732e2ada2ad32d981b0f0b8fca5739df6b69cd969469bb8d0a9c7dd61ecf05",
+            "name": "hw-python",
+            "urls": [
+                "charts/hw-python-1.0.0.tgz"
+            ],
+            "version": "1.0.0"
+        }
+    ]
+}
+```
+
+Download helm chart:
+
+```
+$ sudo -E dms_cli download_helm_chart hw-python 1.0.0 --output_path=./
+status: OK
+```
+
+Build xApp as a Docker container:
+
+```
+$ cd <hw-python>
+$ sudo docker build -t nexus3.o-ran-sc.org:10004/o-ran-sc/ric-app-hw-python:1.1.0 .
+```
+
+Then verify:
+
+```
+sudo docker images
+REPOSITORY                                                TAG          IMAGE ID       CREATED          SIZE
+nexus3.o-ran-sc.org:10004/o-ran-sc/ric-app-hw-python      1.1.0        dc30c08c64cf   27 seconds ago   229MB
+```
+
+Deploy xApp:
+
+```
+$ sudo -E dms_cli install hw-python 1.0.0 ricxapp
+status: OK
+```
+
+Verify:
+
+```
+$ sudo kubectl get pods -n ricxapp
+NAME                                 READY   STATUS    RESTARTS   AGE
+ricxapp-hw-python-5849d9bdfd-w9s4m   1/1     Running   0          8s
+```
+
+Undeploy xApp:
+
+```
+$ sudo -E dms_cli uninstall hw-python ricxapp
+status: OK
+```
+
+
 ### KPI Mon xApp
 
 Clone the xApp:
@@ -240,8 +361,36 @@ Clone the xApp:
 git clone "https://gerrit.o-ran-sc.org/r/ric-app/kpimon-go"
 ```
 
+Init:
 
+```
+$ cd kpimon-go/deploy
+$ sudo -E dms_cli onboard --config_file_path=config.json --shcema_file_path=schema.json
+{
+"status": "Created"
+}
+```
 
+Build:
+
+```
+$ cd kpimon-go
+$ sudo docker build -t nexus3.o-ran-sc.org:10004/o-ran-sc/ric-app-kpimon-go:1.0.1 .
+```
+
+Deploy:
+
+```
+$ sudo -E dms_cli install kpimon-go 2.0.1 ricxapp
+status: OK
+```
+
+Undeploy:
+
+```
+$ sudo -E dms_cli uninstall kpimon-go ricxapp
+status: OK
+```
 
 ### Undeploying the Infrastructure and Platform Groups
 
