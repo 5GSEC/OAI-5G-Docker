@@ -325,7 +325,7 @@ $ sudo docker build -t nexus3.o-ran-sc.org:10004/o-ran-sc/ric-app-hw-python:1.1.
 Then verify:
 
 ```
-sudo docker images
+$ sudo docker images
 REPOSITORY                                                TAG          IMAGE ID       CREATED          SIZE
 nexus3.o-ran-sc.org:10004/o-ran-sc/ric-app-hw-python      1.1.0        dc30c08c64cf   27 seconds ago   229MB
 ```
@@ -391,6 +391,43 @@ Undeploy:
 $ sudo -E dms_cli uninstall kpimon-go ricxapp
 status: OK
 ```
+
+### MobiFlow Auditor xApp
+
+Download:
+
+```
+$ git clone https://github.com/5GSEC/MobiFlow-Auditor.git
+$ git checkout osc
+```
+
+
+Onboard:
+
+```
+$ cd MobiFlow-Auditor/init
+$ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
+```
+
+Build:
+
+```
+$ cd ../
+$ ./build.sh
+```
+
+Deploy
+
+```
+$ ./deploy.sh
+```
+
+Undeploy
+
+```
+$ ./undeploy.sh
+```
+
 
 ### Undeploying the Infrastructure and Platform Groups
 
@@ -701,3 +738,4 @@ OSC non-RT RIC (docs & arch & install guide): [https://wiki.o-ran-sc.org/display
 
 OSC RIC AI / ML tutorial (H release): [https://wiki.o-ran-sc.org/display/AIMLFEW/Files+for+H+release](https://wiki.o-ran-sc.org/display/AIMLFEW/Files+for+H+release)
 
+xApp python framework: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-xapp-frame-py/en/latest/index.html](https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-xapp-frame-py/en/latest/index.html)
