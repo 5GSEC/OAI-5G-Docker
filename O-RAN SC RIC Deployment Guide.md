@@ -416,6 +416,8 @@ $ cd ../
 $ ./build.sh
 ```
 
+**Currently, you need to start the gNB and let it complete the E2 setup procedure first, then run the xApp that subscribes to the gNB.**
+
 Deploy
 
 ```
@@ -739,3 +741,5 @@ OSC non-RT RIC (docs & arch & install guide): [https://wiki.o-ran-sc.org/display
 OSC RIC AI / ML tutorial (H release): [https://wiki.o-ran-sc.org/display/AIMLFEW/Files+for+H+release](https://wiki.o-ran-sc.org/display/AIMLFEW/Files+for+H+release)
 
 xApp python framework: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-xapp-frame-py/en/latest/index.html](https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-xapp-frame-py/en/latest/index.html)
+
+Subscription manager doc: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-submgr/en/latest/user-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-submgr/en/latest/user-guide.html)
