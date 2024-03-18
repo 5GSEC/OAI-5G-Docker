@@ -604,11 +604,63 @@ $ curl -X GET http://10.96.118.190:3800/v1/nodeb/states 2>/dev/null|jq
 ]
 ```
 
+## Shared Data Layer (SDL)
+
+Shared Data Layer (SDL) provides a lightweight, high-speed interface (API) for accessing shared data storage. SDL can be used for storing and sharing any data. Data can be shared at VNF level. One typical use case for SDL is sharing the state data of stateful application processes. Thus enabling stateful application processes to become stateless, conforming with, e.g., the requirements of the fifth generation mobile networks. Refer to: https://wiki.o-ran-sc.org/pages/viewpage.action?pageId=20874400
+
+By default, the OSC near-RT RIC will deploy the redis database as a service backend.
+
+```
+$ sudo kubectl get pods -n ricplt
+NAME                                                         READY   STATUS    RESTARTS   AGE
+...
+statefulset-ricplt-dbaas-server-0                            1/1     Running   0          100m
+```
+
+After logging into the container, you can use some command line tools to query the databases:
+
+```
+# sdlcli -h
+Shared Data Layer (SDL) troubleshooting command line tool
+
+Usage:
+  sdlcli [flags]
+  sdlcli [command]
+
+Available Commands:
+  completion  Generate shell completion script
+  get         Display one or many resources
+  healthcheck Validate SDL database healthiness
+  help        Help about any command
+  remove      Remove key(s) under given namespace from SDL DB
+  set         Set a key-value pair to SDL DB under given namespace
+  statistics  Display statistics.
+
+Flags:
+  -h, --help   help for sdlcli
+
+Use "sdlcli [command] --help" for more information about a command.
+```
+
 
 
 ## Non-RT-RIC
 
 Adapted from [https://docs.o-ran-sc.org/projects/o-ran-sc-nonrtric/en/latest/installation-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-nonrtric/en/latest/installation-guide.html)
+
+Prerequisites
+
+- kubernetes v1.19 +
+- docker and docker-compose (latest)
+- git
+- Text editor, e.g. vi, notepad, nano, etc.
+- helm
+- helm3
+- ChartMuseum to store the HELM charts on the server, multiple options are available:
+	- Execute the install script: `./dep/smo-install/scripts/layer-0/0-setup-charts-museum.sh`
+	- Install chartmuseum manually on port 18080 (https://chartmuseum.com/#Instructions, https://github.com/helm/chartmuseum)
+
+
 
 First, clone to repo:
 
