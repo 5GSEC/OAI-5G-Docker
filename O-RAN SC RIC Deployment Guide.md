@@ -2,7 +2,11 @@
 
 Env: Ubuntu 20.04 VM, 100GB storage, 6 virtual CPUs, 8G RAM, libvirt provider. Clean environment.
 
+## Prerequisite
 
+- Kubernetes (non-RT RIC requires at least v1.19+)
+- Helm
+- Docker
 
 ## Near-RT-RIC
 
@@ -796,5 +800,8 @@ xApp python framework: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-xapp
 
 Subscription manager doc: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-submgr/en/latest/user-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-submgr/en/latest/user-guide.html)
 
-
 OSC documentations (I Release): [https://docs.o-ran-sc.org/en/latest/](https://docs.o-ran-sc.org/en/latest/)
+
+Install Kubernete (v1.25+): [https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+
+Install Helm: [https://helm.sh/docs/intro/install/](https://helm.sh/docs/intro/install/)
