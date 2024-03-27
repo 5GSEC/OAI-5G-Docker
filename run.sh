@@ -97,7 +97,7 @@ while [ -n "$1" ]; do
             _oai_root=$_oai_attack_root
             if $_rfsim; then
                 _prefix="NR-UE-ATTACK-RFSIM"
-                _config_path="$_oai_config_root/nr-usrp/nr-ues/nrue.attack.uicc.conf"
+                _config_path="$_oai_config_root/nr-rfsim/nr-ues/nrue.attack.uicc.conf"
                 _common_args="-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 -O $_config_path $_attack_args"
                 _exec_path="./nr-uesoftmodem.attack"
             else
