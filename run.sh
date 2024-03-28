@@ -65,16 +65,28 @@ while [ -n "$1" ]; do
             ;;
         gnb-cu)
             _find_route=true
-            _prefix="GNB-CU"
-            _config_path="$_oai_config_root/nr-usrp/gnb-cu.conf"
-            _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6"
+            if $_rfsim; then
+                _prefix="GNB-CU-RFSIM"
+                _config_path="$_oai_config_root/nr-rfsim/gnb-cu.conf"
+                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --rfsim"
+            else
+                _prefix="GNB-CU"
+                _config_path="$_oai_config_root/nr-usrp/gnb-cu.conf"
+                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6"
+            fi
             _exec_path="./nr-softmodem"
             ;;
         gnb-du)
             _find_route=true
-            _prefix="GNB-DU"
-            _config_path="$_oai_config_root/nr-usrp/gnb-du.conf"
-            _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
+            if $_rfsim; then
+                _prefix="GNB-DU-RFSIM"
+                _config_path="$_oai_config_root/nr-rfsim/gnb-du.conf"
+                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1 --rfsim"
+            else
+                _prefix="GNB-DU"
+                _config_path="$_oai_config_root/nr-usrp/gnb-du.conf"
+                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --usrp-tx-thread-config 1 -E --continuous-tx 1"
+            fi
             _exec_path="./nr-softmodem"
             ;;
         nrue*)
