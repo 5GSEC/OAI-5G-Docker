@@ -70,6 +70,8 @@ services:
             - SMF_SELECTION=yes
             - USE_FQDN_DNS=yes
             - USE_HTTP2=no
+            - INT_ALGO_LIST=["NIA2" , "NIA1", "NIA0"]
+            - CIPH_ALGO_LIST=["NEA2" , "NEA1", "NEA0"
         depends_on:
             - oai-nrf
             - mysql
