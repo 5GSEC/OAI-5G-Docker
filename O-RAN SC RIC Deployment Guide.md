@@ -8,6 +8,11 @@ Env: Ubuntu 20.04 VM, 100GB storage, 6 virtual CPUs, 8G RAM, libvirt provider. C
 - Helm
 - Docker
 
+Note: After March 2024, it's impossible to install the legacy Kubernetes packages (< v1.25) through central repositories with `apt`. However, as of April 2024, the OSC RIC infrastructure depends on legacy Kubernetes (near-RT RIC uses v1.16 while non-RT RIC requires > v1.19), and thus the newer versions are not applicable. To install those legacy versions, please refer to the **Install Legacy K8S** at end of this guide.
+
+For K8S ver after v1.25, you can still install through their official guides: https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+
 ## Near-RT-RIC
 
 Referenced and tweaked from: https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-ric-dep/en/latest/installation-guides.html
@@ -777,6 +782,67 @@ sudo bin/undeploy-nonrtric
 ## OSC AI / ML Framework 
 
 Adapted from [https://docs.o-ran-sc.org/projects/o-ran-sc-aiml-fw-aimlfw-dep/en/latest/installation-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-aiml-fw-aimlfw-dep/en/latest/installation-guide.html)
+
+
+## Install Legacy K8S
+
+Since March 2024, "The legacy Google-hosted package repositories went away on March 4, 2024. It's not possible to install Kubernetes packages from the legacy Google-hosted package repositories any longer" (https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/).
+
+However, there are still ways to install the legacy versions, such as https://flex-solution.com/page/blog/install-k8s-lower-than-1_24 (many thanks to the author!)
+
+Below are the guides to instantiate a v1.21 K8S cluster without using the guide from OSC:
+
+After you install the corresponding version of the K8S packages, initialize the cluster:
+
+```
+kubeadm init --pod-network-cidr=10.96.0.0/16 --service-cidr=10.97.0.0/16
+```
+
+Init the config folder:
+
+```
+mkdir -p /root/.kube
+cp -i /etc/kubernetes/admin.conf /root/.kube/config
+```
+
+Apply the network plugin (this example uses calico v3.22 which is mentioned in the OSC AI/ML init scripts)
+
+```
+sudo kubectl apply -f "https://projectcalico.docs.tigera.io/archive/v3.22/manifests/calico.yaml"
+```
+
+Untaint nodes:
+
+```
+kubectl taint nodes --all node-role.kubernetes.io/master-
+```
+
+Validate the deployment:
+
+```
+$ sudo kubectl get pods -A
+NAMESPACE     NAME                                       READY   STATUS    RESTARTS   AGE
+kube-system   calico-kube-controllers-7c87c5f9b8-zvb7m   1/1     Running   0          2m45s
+kube-system   calico-node-xwqzk                          1/1     Running   0          2m45s
+kube-system   coredns-558bd4d5db-jd597                   1/1     Running   0          3m18s
+kube-system   coredns-558bd4d5db-kb2f8                   1/1     Running   0          3m18s
+kube-system   etcd-cse-dnc215946d                        1/1     Running   15         3m32s
+kube-system   kube-apiserver-cse-dnc215946d              1/1     Running   0          3m38s
+kube-system   kube-controller-manager-cse-dnc215946d     1/1     Running   0          3m38s
+kube-system   kube-proxy-dwpct                           1/1     Running   0          3m19s
+kube-system   kube-scheduler-cse-dnc215946d              1/1     Running   13         3m37s
+```
+
+You can allow non-root users to use the `kubectl` command:
+
+```
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chmod +r $HOME/.kube/config
+```
+
+
+If you want to revert the changes, use `kubectl delete -f`, or `kubeadm reset` to remove the whold cluster.
+
 
 
 ## Useful Links
