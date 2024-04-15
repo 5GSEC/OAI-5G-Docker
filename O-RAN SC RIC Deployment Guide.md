@@ -811,7 +811,7 @@ Apply the network plugin (this example uses calico v3.22 which is mentioned in t
 sudo kubectl apply -f "https://projectcalico.docs.tigera.io/archive/v3.22/manifests/calico.yaml"
 ```
 
-Untaint nodes:
+Taint nodes:
 
 ```
 kubectl taint nodes --all node-role.kubernetes.io/master-
@@ -826,11 +826,11 @@ kube-system   calico-kube-controllers-7c87c5f9b8-zvb7m   1/1     Running   0    
 kube-system   calico-node-xwqzk                          1/1     Running   0          2m45s
 kube-system   coredns-558bd4d5db-jd597                   1/1     Running   0          3m18s
 kube-system   coredns-558bd4d5db-kb2f8                   1/1     Running   0          3m18s
-kube-system   etcd-cse-dnc215946d                        1/1     Running   15         3m32s
-kube-system   kube-apiserver-cse-dnc215946d              1/1     Running   0          3m38s
-kube-system   kube-controller-manager-cse-dnc215946d     1/1     Running   0          3m38s
+kube-system   etcd-*                        		 1/1     Running   15         3m32s
+kube-system   kube-apiserver-*              		 1/1     Running   0          3m38s
+kube-system   kube-controller-manager-*			 1/1     Running   0          3m38s
 kube-system   kube-proxy-dwpct                           1/1     Running   0          3m19s
-kube-system   kube-scheduler-cse-dnc215946d              1/1     Running   13         3m37s
+kube-system   kube-scheduler-*              		 1/1     Running   13         3m37s
 ```
 
 You can allow non-root users to use the `kubectl` command:
@@ -841,7 +841,7 @@ sudo chmod +r $HOME/.kube/config
 ```
 
 
-If you want to revert the changes, use `kubectl delete -f`, or `kubeadm reset` to remove the whold cluster.
+If you want to undeploy the pods, use `kubectl delete -f`, or `kubeadm reset` to remove the whole cluster.
 
 
 
