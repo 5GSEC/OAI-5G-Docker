@@ -1,6 +1,6 @@
 # O-RAN SC RIC Deployment Guide
 
-Env: Ubuntu 20.04 VM, 100GB storage, 6 virtual CPUs, 8G RAM, libvirt provider. Clean environment.
+Env: Ubuntu 20.04 LTS (x86_64), Free storage ~1TB, 12 Intel I7 CPUs, 32G RAM
 
 ## Prerequisite
 
