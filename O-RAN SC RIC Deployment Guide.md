@@ -866,11 +866,13 @@ xApp python framework: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-xapp
 
 OSC RIC RMR library: [https://github.com/o-ran-sc/ric-plt-lib-rmr](https://github.com/o-ran-sc/ric-plt-lib-rmr)
 
-OSC RIC message type defintion: [https://github.com/o-ran-sc/ric-plt-lib-rmr/blob/master/src/rmr/common/include/RIC_message_types.h](https://github.com/o-ran-sc/ric-plt-lib-rmr/blob/master/src/rmr/common/include/RIC_message_types.h) 
+OSC RIC message type definition: [https://github.com/o-ran-sc/ric-plt-lib-rmr/blob/master/src/rmr/common/include/RIC_message_types.h](https://github.com/o-ran-sc/ric-plt-lib-rmr/blob/master/src/rmr/common/include/RIC_message_types.h) 
+
+OSC RIC RMR user guide: [https://wiki.o-ran-sc.org/display/RICP/RMR_user_guide](https://wiki.o-ran-sc.org/display/RICP/RMR_user_guide)
 
 Subscription manager doc: [https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-submgr/en/latest/user-guide.html](https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-submgr/en/latest/user-guide.html)
 
-OSC documentations (I Release): [https://docs.o-ran-sc.org/en/latest/](https://docs.o-ran-sc.org/en/latest/)
+OSC documentation (I Release): [https://docs.o-ran-sc.org/en/latest/](https://docs.o-ran-sc.org/en/latest/)
 
 Install Kubernete (v1.25+): [https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/](https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
