@@ -476,7 +476,15 @@ You may use OAI with either the ONOS E2 agent or the OAI E2 agent to connect wit
 
 ### ONOS E2 Agent
 
-Clone the `OAI-5G` repository from [https://github.com/5GSEC/OAI-5G](https://github.com/5GSEC/OAI-5G). Then compile OAI. Be sure to include the `--build-ric-agent` arg:
+This is an E2 agent originally implemented in the [ONOS's openairinterface](https://github.com/onosproject/openairinterface5g) mirror. However, the maintenance of the project has stopped. We have extended this E2 agent implementation so that it supports OSC RIC and the [5G-Spector](https://github.com/5GSEC/5G-Spector) components.
+
+Clone the `OAI-5G` repository from [https://github.com/5GSEC/OAI-5G](https://github.com/5GSEC/OAI-5G). Our latest update on the RIC agent has been integrated into OAI [v2.1.0](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/CHANGELOG.md?ref_type=heads). Checkout the correct branch:
+
+```
+git checkout v2.1.0.secsm.osc
+```
+
+Then compile OAI. Be sure to include the `--build-ric-agent` arg to build the E2 agent:
 
 ```
 cd <OAI-ROOT>/cmake_targets
