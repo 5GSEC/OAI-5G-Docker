@@ -491,6 +491,8 @@ cd <OAI-ROOT>/cmake_targets
 ./build_oai -w SIMU --gNB --nrUE --build-ric-agent --ninja
 ```
 
+(Change `-w SIMU` to `-w USRP` if you run the gNB on a USRP instead of simulation)
+
 Obtain the E2T's service IP address and port from the deployed RIC:
 
 ```
