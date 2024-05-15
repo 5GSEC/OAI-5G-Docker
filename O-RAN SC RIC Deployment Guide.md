@@ -12,6 +12,8 @@ Note: After March 2024, it's impossible to install the legacy Kubernetes package
 
 For K8S ver after v1.25, you can still install through their official guides: https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 
+O-RAN SC also provided their workaround at: https://jira.o-ran-sc.org/browse/RIC-1052
+
 
 ## Near-RT-RIC
 
