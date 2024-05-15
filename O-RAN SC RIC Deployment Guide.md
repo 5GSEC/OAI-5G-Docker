@@ -142,13 +142,14 @@ tiller-secret-generator-plpbf               0/1     Completed   0          163m
 
 ### Checking Container Health
 
-(NOT successful so far)
 
 Check the health of the application manager platform component by querying it via the ingress controller using the following command.
 
 ```
 $ curl -v http://localhost:32080/appmgr/ric/v1/health/ready
 ```
+
+(Replace `localhost` with your machine's IP if not successful)
 
 The output should look as follows.
 
@@ -255,7 +256,7 @@ First checkout the [hw-python](https://gerrit.o-ran-sc.org/r/ric-app/hw-python) 
 git clone "https://gerrit.o-ran-sc.org/r/ric-app/hw-python"
 ```
 
-`hw-python` has following folder structure
+`hw-python` has the following folder structure
 
 ```
 +---docs
@@ -277,7 +278,7 @@ git clone "https://gerrit.o-ran-sc.org/r/ric-app/hw-python"
 
 For onboarding `hw-python` make sure that `dms_cli` and helm3 is installed. One can follow [documentation](https://docs.o-ran-sc.org/projects/o-ran-sc-it-dep/en/latest/installation-guides.html#ric-applications) to configure `dms_cli`.
 
-Once `dms_cli` is availabe we can proceed to onboarding proceure.
+Once `dms_cli` is available we can proceed to onboarding process.
 
 
 Check if `dms_cli` working fine:
@@ -505,12 +506,12 @@ service-ricplt-e2term-sctp-alpha            NodePort    10.111.203.170   <none> 
 ...
 ```
 
-Update the OAI gNB config to specify the E2T IP:
+Update the OAI gNB config to specify the E2T IP and port:
 
 ```
 # Begin RIC-specific settings
 RIC : {
-    remote_ipv4_addr = "10.111.197.150"; # TODO Replace it with the actual RIC e2t Address
+    remote_ipv4_addr = "10.111.203.170"; # TODO Replace it with the actual RIC e2t Address
     remote_port = 36422;
     enabled = "yes";
 };
@@ -522,7 +523,7 @@ Also, update the `local_s_address` field to the public host IP running the gNB.
 local_s_address  = "192.168.121.191";
 ```
 
-Next, follow the tutorial in [https://github.com/5GSEC/5G-Spector/wiki/Build-5G%E2%80%90Spector-from-scratch-in-an-OAI-5G-network](https://github.com/5GSEC/5G-Spector/wiki/Build-5G%E2%80%90Spector-from-scratch-in-an-OAI-5G-network) to run OAI gNB in RFSIM mode.
+Next, follow this [tutorial](https://github.com/5GSEC/5G-Spector/wiki/Build-5G%E2%80%90Spector-from-scratch-in-an-OAI-5G-network#24-deploy-the-gnb) to run OAI gNB in RFSIM mode.
 
 Success indication of E2 Setup procedure from the gNB log:
 
