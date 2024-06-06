@@ -506,7 +506,7 @@ service-ricplt-e2term-sctp-alpha            NodePort    10.111.203.170   <none> 
 ...
 ```
 
-Update the OAI gNB config to specify the E2T IP and port (template gNB config can be found [here](https://github.com/5GSEC/OAI-5G-Docker/blob/master/nr-rfsim/gnb.conf](https://github.com/5GSEC/OAI-5G-Docker/blob/master/nr-rfsim/gnb.conf#L19):
+Update the OAI gNB config to specify the E2T IP and port (template gNB config can be found [here](https://github.com/5GSEC/OAI-5G-Docker/blob/master/nr-rfsim/gnb.conf#L19):
 
 ```
 # Begin RIC-specific settings
