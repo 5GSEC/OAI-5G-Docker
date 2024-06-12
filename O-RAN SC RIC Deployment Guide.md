@@ -229,7 +229,6 @@ Step 6: (OPTIONAL ) If the host user is non-root user, after installing the pack
 #Assign relevant permission for non-root user
 sudo chmod 755 /usr/local/bin/dms_cli
 sudo chmod -R 755 /usr/local/lib/python3.6
-sudo chmod -R 755 /usr/local/lib/python3.6
 ```
 
 Step 7: Onboard your xApp
@@ -290,7 +289,7 @@ True
 Now move to `init` folder to initiate onboarding.
 
 ```
-$ cd init
+$ cd hw-python/init
 
 $ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
 {
@@ -393,7 +392,8 @@ $ sudo docker build -t nexus3.o-ran-sc.org:10004/o-ran-sc/ric-app-kpimon-go:1.0.
 Deploy:
 
 ```
-$ sudo -E dms_cli install kpimon-go 2.0.1 ricxapp
+Check the version numbetr mentioned in the 'kpimon-go/deploy/config.json' file e.g.  ```"version": "2.0.2-alpha"```
+$ sudo -E dms_cli install kpimon-go 2.0.2-alpha ricxapp
 status: OK
 ```
 
@@ -410,6 +410,7 @@ Download:
 
 ```
 $ git clone https://github.com/5GSEC/MobiFlow-Auditor.git
+$ cd MobiFlow-Auditor
 $ git checkout osc
 ```
 
@@ -417,7 +418,7 @@ $ git checkout osc
 Onboard:
 
 ```
-$ cd MobiFlow-Auditor/init
+$ cd init
 $ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
 ```
 
@@ -446,7 +447,7 @@ $ ./undeploy.sh
 ### Undeploying the Infrastructure and Platform Groups
 
 ```
-$ cd bin
+$ cd ric-dep/bin
 $ sudo ./uninstall
 ```
 
