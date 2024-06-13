@@ -174,7 +174,9 @@ The output should look as follows.
 * Connection #0 to host 10.0.2.100 left intact
 ```
 
-### RIC Applications
+## RIC Applications
+
+### General Instructions
 
 **xApp Onboarding using CLI tool called dms_cli**
 
@@ -245,9 +247,93 @@ OR
 dms_cli onboard --config_file_path=/files/config-file.json --shcema_file_path=/files/schema.json
 ```
 
+### MobiFlow Auditor xApp
+
+An xApp supporting fine-grained and security-aware statistics monitoring over the RAN data plane. It is an essential part of the [5G-Spector](https://github.com/5GSEC/5G-Spector). Project repo: https://github.com/5GSEC/MobiFlow-Auditor/tree/osc. Quick start instructions below:
+
+Download:
+
+```
+$ git clone https://github.com/5GSEC/MobiFlow-Auditor.git
+$ cd MobiFlow-Auditor
+$ git checkout osc
+```
+
+
+Onboard:
+
+```
+$ cd init
+$ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
+```
+
+Build:
+
+```
+$ cd ../
+$ ./build.sh
+```
+
+**Currently, you need to start the gNB and let it complete the E2 setup procedure first, then run the xApp that subscribes to the gNB.**
+
+Deploy
+
+```
+$ ./deploy.sh
+```
+
+Undeploy
+
+```
+$ ./undeploy.sh
+```
+
+### MobieXpert xApp
+
+A programmable xApp for L3 cellular attack detection using the P-BEST language based on MobiFlow security telemetry. It is an essential part of the [5G-Spector](https://github.com/5GSEC/5G-Spector). Project repo: https://github.com/5GSEC/MobiFlow-Auditor/tree/osc. Quick start instructions below:
+
+Download:
+
+```
+$ git clone https://github.com/5GSEC/MobieXpert.git
+$ cd MobieXpert
+$ git checkout osc
+```
+
+
+Onboard:
+
+```
+$ cd init
+$ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
+```
+
+Build:
+
+```
+$ cd ../
+$ ./build.sh
+```
+
+Deploy
+
+```
+$ ./deploy.sh
+```
+
+Undeploy
+
+```
+$ ./undeploy.sh
+```
+
+### Python xApp Development Template
+
+This is an xApp template based on [OSC's xApp Python Framework](https://github.com/o-ran-sc/ric-plt-xapp-frame-py). The template has included basic xApp operations such as subscription and SDL interactions. Adapt this development template to create your (Python) xApp on the OSC RIC: https://github.com/5GSEC/OSC-RIC-xApp-Template. 
+
 ### Hello World Python xApp
 
-Adapted from https://gerrit.o-ran-sc.org/r/gitweb?p=ric-app/hw-python.git;a=blob;f=docs/onboard-and-deploy.rst;h=0308a48e31f108ac7e77701a39ce47d68555f34b;hb=HEAD
+An example nRT-RIC xApp from OSC's official [repository](https://github.com/o-ran-sc/ric-app-hw-python). Installation is adapted from https://gerrit.o-ran-sc.org/r/gitweb?p=ric-app/hw-python.git;a=blob;f=docs/onboard-and-deploy.rst;h=0308a48e31f108ac7e77701a39ce47d68555f34b;hb=HEAD
 
 First checkout the [hw-python](https://gerrit.o-ran-sc.org/r/ric-app/hw-python) repository from gerrit.
 
@@ -366,6 +452,8 @@ status: OK
 
 ### KPI Mon xApp
 
+OSC's official KPM monitor xApp in Golang.
+
 Clone the xApp:
 
 ```
@@ -402,45 +490,6 @@ Undeploy:
 ```
 $ sudo -E dms_cli uninstall kpimon-go ricxapp
 status: OK
-```
-
-### MobiFlow Auditor xApp
-
-Download:
-
-```
-$ git clone https://github.com/5GSEC/MobiFlow-Auditor.git
-$ cd MobiFlow-Auditor
-$ git checkout osc
-```
-
-
-Onboard:
-
-```
-$ cd init
-$ sudo -E dms_cli onboard --config_file_path=config-file.json --shcema_file_path=schema.json
-```
-
-Build:
-
-```
-$ cd ../
-$ ./build.sh
-```
-
-**Currently, you need to start the gNB and let it complete the E2 setup procedure first, then run the xApp that subscribes to the gNB.**
-
-Deploy
-
-```
-$ ./deploy.sh
-```
-
-Undeploy
-
-```
-$ ./undeploy.sh
 ```
 
 
