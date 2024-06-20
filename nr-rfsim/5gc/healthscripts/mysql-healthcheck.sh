@@ -20,7 +20,7 @@ args=(
 STATUS=0
 if command -v mysqladmin &> /dev/null; then
 	if mysqladmin "${args[@]}" ping > /dev/null; then
-		database_check=$(mysql -u$user -D oai_db --silent -e "SELECT * FROM users;")
+		database_check=$(mysql -u$user -D oai_db --silent -e "SELECT * FROM AuthenticationSubscription;")
 		if [[ -z $database_check ]]; then
 			echo "Healthcheck error: oai_db not populated"
 			STATUS=1
@@ -32,7 +32,7 @@ if command -v mysqladmin &> /dev/null; then
 	fi
 else
 	if select="$(echo 'SELECT 1' | mysql "${args[@]}")" && [ "$select" = '1' ]; then
-		database_check=$(mysql -u$user -D oai_db --silent -e "SELECT * FROM users;")
+		database_check=$(mysql -u$user -D oai_db --silent -e "SELECT * FROM AuthenticationSubscription;")
 		if [[ -z $database_check ]]; then
 			echo "Healthcheck error: oai_db not populated"
 			STATUS=1
