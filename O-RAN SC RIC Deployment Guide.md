@@ -8,13 +8,6 @@ Env: Ubuntu 20.04 LTS (x86_64), Free storage ~1TB, 12 Intel I7 CPUs, 32G RAM
 - Helm
 - Docker
 
-Note: After March 2024, it's impossible to install the legacy Kubernetes packages (< v1.25) through central repositories with `apt`. However, as of April 2024, the OSC RIC infrastructure depends on legacy Kubernetes (near-RT RIC uses v1.16 while non-RT RIC requires > v1.19), and thus the newer versions are not applicable. To install those legacy versions, please refer to the **Install Legacy K8S** at end of this guide.
-
-For K8S ver after v1.25, you can still install through their official guides: https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
-
-O-RAN SC also provided their workaround at: https://jira.o-ran-sc.org/browse/RIC-1052
-
-
 ## Near-RT-RIC
 
 Referenced and tweaked from: https://docs.o-ran-sc.org/projects/o-ran-sc-ric-plt-ric-dep/en/latest/installation-guides.html
@@ -849,7 +842,9 @@ Adapted from [https://docs.o-ran-sc.org/projects/o-ran-sc-aiml-fw-aimlfw-dep/en/
 
 ## Install Legacy K8S
 
-Since March 2024, "The legacy Google-hosted package repositories went away on March 4, 2024. It's not possible to install Kubernetes packages from the legacy Google-hosted package repositories any longer" (https://kubernetes.io/blog/2023/08/15/pkgs-k8s-io-introduction/).
+Note: After March 2024, it's impossible to install the legacy Kubernetes packages (< v1.25) through central repositories with `apt`. ~~However, as of April 2024, the OSC RIC infrastructure depends on legacy Kubernetes (near-RT RIC uses v1.16 while non-RT RIC requires > v1.19), and thus the newer versions are not applicable.~~ In the latest O-RAN SC J Release, it has supported K8S v1.28 so this guide is **NOT necessary** any more. Simply use the provided script `./bin/install_k8s_and_helm.sh` in the `ric-dep` nRT-RIC repo is sufficient.
+ 
+For K8S ver after v1.25, you can still install through their official guides: https://v1-25.docs.kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 
 However, there are still ways to install the legacy versions, such as https://flex-solution.com/page/blog/install-k8s-lower-than-1_24 (many thanks to the author!)
 
