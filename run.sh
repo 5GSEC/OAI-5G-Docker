@@ -68,7 +68,7 @@ while [ -n "$1" ]; do
             if $_rfsim; then
                 _prefix="GNB-CU-RFSIM"
                 _config_path="$_oai_config_root/nr-rfsim/gnb-cu.conf"
-                _common_args="-O $_config_path --sa -E --gNBs.[0].min_rxtxtime 6 --rfsim"
+                _common_args="-O $_config_path --sa -E --rfsim"
             else
                 _prefix="GNB-CU"
                 _config_path="$_oai_config_root/nr-usrp/gnb-cu.conf"
