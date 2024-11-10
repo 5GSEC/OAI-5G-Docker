@@ -100,7 +100,7 @@ while [ -n "$1" ]; do
                 _prefix="NR-UE"
                 _config_path="$_oai_config_root/nr-usrp/nr-ues/$_arg.uicc.conf"
                 _common_args="-O $_config_path --dlsch-parallel 8 --sa --usrp-args \"$_usrp_args\" -E --numerology 1 -r 106 --band 78 -C 3619200000 --nokrnmod 1 --ue-txgain 0 -A 2539 --ue-fo-compensation 1"
-                _exec_path="$_colosseum_prefix ./nr-uesoftmodem"
+                _exec_path="./nr-uesoftmodem"
             fi
             ;;
         nr-attack)
