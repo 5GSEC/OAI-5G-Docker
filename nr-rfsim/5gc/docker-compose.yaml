@@ -167,6 +167,124 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.135
+    
+    oai-cu:
+        privileged: true
+        image: ${REGISTRY:-oaisoftwarealliance}/${GNB_IMG:-oai-gnb}:${TAG:-v2.1.0}
+        container_name: rfsim5g-oai-cu
+        cap_drop:
+            - ALL
+        environment: 
+            USE_ADDITIONAL_OPTIONS: --log_config.global_log_options level,nocolor,time
+                                    --sa -E
+                                    # --rfsimulator.options chanmod
+                                    # --telnetsrv --telnetsrv.listenaddr 192.168.71.150
+                                    # --telnetsrv.shrmod ci
+            ASAN_OPTIONS: detect_leaks=0:detect_odr_violation=0
+        # depends_on:
+            # - oai-ext-dn
+        # entrypoint: /bin/bash -c "sleep infinity"
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.150
+        volumes:
+          - ../gnb-cu-docker.conf:/opt/oai-gnb/etc/gnb.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-softmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    oai-du:
+        privileged: true
+        image: ${REGISTRY:-oaisoftwarealliance}/${GNB_IMG:-oai-gnb}:${TAG:-v2.1.0}
+        container_name: rfsim5g-oai-du
+        cap_drop:
+            - ALL
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --sa -E --gNBs.[0].min_rxtxtime 6 
+                                    --log_config.global_log_options level,nocolor,time
+                                    # --rfsimulator.options chanmod
+                                    # --telnetsrv --telnetsrv.listenaddr 192.168.71.171
+                                    # --telnetsrv.shrmod ci
+            ASAN_OPTIONS: detect_leaks=0:detect_odr_violation=0
+        depends_on:
+            - oai-cu
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.171
+        volumes:
+            - ../gnb-du-docker.conf:/opt/oai-gnb/etc/gnb.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-softmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    
+    oai-nr-ue-0:
+        privileged: true
+        image: ${REGISTRY:-oaisoftwarealliance}/${NRUE_IMG:-oai-nr-ue}:${TAG:-v2.1.0}
+        container_name: rfsim5g-oai-nr-ue-0
+        cap_drop:
+            - ALL
+        cap_add:
+            - NET_ADMIN  # for interface bringup
+            - NET_RAW    # for ping
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --log_config.global_log_options level,nocolor,time
+                                    -E --sa -r 106 --numerology 1 -C 3619200000
+                                    --rfsimulator.serveraddr 192.168.70.171
+                                    # --uicc0.imsi 208990100001100
+                                    # --rfsimulator.options chanmod
+                                    # --telnetsrv --telnetsrv.shrmod ciUE --telnetsrv.listenaddr 192.168.71.181 --telnetsrv.listenport 8091
+            ASAN_OPTIONS: detect_odr_violation=0
+        depends_on:
+            - oai-du
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.180
+        devices:
+             - /dev/net/tun:/dev/net/tun
+        volumes:
+            - ../nr-ues/nrue0.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-uesoftmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    oai-nr-ue-1:
+        privileged: true
+        image: ${REGISTRY:-oaisoftwarealliance}/${NRUE_IMG:-oai-nr-ue}:${TAG:-v2.1.0}
+        container_name: rfsim5g-oai-nr-ue-1
+        cap_drop:
+            - ALL
+        cap_add:
+            - NET_ADMIN  # for interface bringup
+            - NET_RAW    # for ping
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --log_config.global_log_options level,nocolor,time
+                                    -E --sa -r 106 --numerology 1 -C 3619200000
+                                    --rfsimulator.serveraddr 192.168.70.171
+                                    # --uicc0.imsi 208990100001100
+                                    # --rfsimulator.options chanmod
+                                    # --telnetsrv --telnetsrv.shrmod ciUE --telnetsrv.listenaddr 192.168.71.181 --telnetsrv.listenport 8091
+            ASAN_OPTIONS: detect_odr_violation=0
+        depends_on:
+            - oai-du
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.181
+        devices:
+             - /dev/net/tun:/dev/net/tun
+        volumes:
+            - ../nr-ues/nrue1.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-uesoftmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
 networks:
     # public_net:
     #     external:
