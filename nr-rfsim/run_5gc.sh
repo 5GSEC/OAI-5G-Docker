@@ -1,5 +1,2 @@
 #!/bin/bash
-# docker-compose up -d mysql oai-nrf oai-amf oai-smf oai-spgwu oai-ext-dn
-pushd 5gc
-docker-compose up -d
-popd
+docker-compose up -d mysql ims oai-udr oai-udm oai-ausf oai-nrf oai-amf oai-smf oai-upf oai-ext-dn

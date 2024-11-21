@@ -4,8 +4,8 @@ services:
         container_name: "mysql"
         image: mysql:8.0
         volumes:
-            - ./database/oai_db.sql:/docker-entrypoint-initdb.d/oai_db.sql
-            - ./healthscripts/mysql-healthcheck.sh:/tmp/mysql-healthcheck.sh
+            - ./5gc/database/oai_db.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./5gc/healthscripts/mysql-healthcheck.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
             - MYSQL_DATABASE=oai_db
@@ -25,8 +25,8 @@ services:
         container_name: "ims"
         image: oaisoftwarealliance/ims:latest
         volumes:
-            - ./conf/sip.conf:/etc/asterisk/sip.conf
-            - ./conf/users.conf:/etc/asterisk/users.conf
+            - ./5gc/conf/sip.conf:/etc/asterisk/sip.conf
+            - ./5gc/conf/users.conf:/etc/asterisk/users.conf
         healthcheck:
             test: /bin/bash -c "pgrep asterisk"
             interval: 5s
@@ -42,7 +42,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/config.yaml:/openair-udr/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-udr/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -58,7 +58,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/config.yaml:/openair-udm/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-udm/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -73,7 +73,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/config.yaml:/openair-ausf/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-ausf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -88,7 +88,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/config.yaml:/openair-nrf/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-nrf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         networks:
@@ -102,7 +102,7 @@ services:
             - 8080/tcp
             - 38412/sctp
         volumes:
-            - ./conf/config.yaml:/openair-amf/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-amf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -120,7 +120,7 @@ services:
             - 8080/tcp
             - 8805/udp
         volumes:
-            - ./conf/config.yaml:/openair-smf/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -136,7 +136,7 @@ services:
             - 2152/udp
             - 8805/udp
         volumes:
-            - ./conf/config.yaml:/openair-upf/etc/config.yaml
+            - ./5gc/conf/config.yaml:/openair-upf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -188,7 +188,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.150
         volumes:
-          - ../gnb-cu-docker.conf:/opt/oai-gnb/etc/gnb.conf
+          - ./gnb-cu-docker.conf:/opt/oai-gnb/etc/gnb.conf
         healthcheck:
             test: /bin/bash -c "pgrep nr-softmodem"
             interval: 10s
@@ -214,7 +214,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.171
         volumes:
-            - ../gnb-du-docker.conf:/opt/oai-gnb/etc/gnb.conf
+            - ./gnb-du-docker.conf:/opt/oai-gnb/etc/gnb.conf
         healthcheck:
             test: /bin/bash -c "pgrep nr-softmodem"
             interval: 10s
@@ -246,7 +246,7 @@ services:
         devices:
              - /dev/net/tun:/dev/net/tun
         volumes:
-            - ../nr-ues/nrue0.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+            - ./nr-ues/nrue0.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
         healthcheck:
             test: /bin/bash -c "pgrep nr-uesoftmodem"
             interval: 10s
@@ -278,7 +278,7 @@ services:
         devices:
              - /dev/net/tun:/dev/net/tun
         volumes:
-            - ../nr-ues/nrue1.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+            - ./nr-ues/nrue1.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
         healthcheck:
             test: /bin/bash -c "pgrep nr-uesoftmodem"
             interval: 10s
@@ -291,6 +291,7 @@ networks:
     #         name: demo-oai-public-net
     public_net:
         driver: bridge
+        external: true
         name: demo-oai-public-net
         ipam:
             config:
