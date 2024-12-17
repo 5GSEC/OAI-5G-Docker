@@ -414,12 +414,9 @@ services:
             retries: 5
 
 networks:
-    # public_net:
-    #     external:
-    #         name: demo-oai-public-net
     public_net:
         driver: bridge
-        external: true
+        #external: true
         name: demo-oai-public-net
         ipam:
             config:
