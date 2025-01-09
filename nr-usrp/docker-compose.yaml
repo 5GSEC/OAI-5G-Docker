@@ -202,12 +202,15 @@ services:
         cap_drop:
             - ALL
         environment:
-            USE_ADDITIONAL_OPTIONS: --sa -E --gNBs.[0].min_rxtxtime 6 
+            USE_B2XX: 'yes'
+            USE_ADDITIONAL_OPTIONS: --sa -E --gNBs.[0].min_rxtxtime 6 --continuous-tx
                                     --log_config.global_log_options level,nocolor,time
                                     # --rfsimulator.options chanmod
                                     # --telnetsrv --telnetsrv.listenaddr 192.168.71.171
                                     # --telnetsrv.shrmod ci
             ASAN_OPTIONS: detect_leaks=0:detect_odr_violation=0
+        devices:
+            - /dev/bus/usb/:/dev/bus/usb/
         depends_on:
             - oai-cu
         networks:
@@ -215,6 +218,11 @@ services:
                 ipv4_address: 192.168.70.171
         volumes:
             - ./gnb-du-docker.conf:/opt/oai-gnb/etc/gnb.conf
+        # for performance reasons, we use host mode: in bridge mode, we have
+        # unacceptable DL TCP performance. However, the whole point of
+        # containerization is to not be in host mode, so update this to macvlan
+        # later.
+        network_mode: "host"
         healthcheck:
             test: /bin/bash -c "pgrep nr-softmodem"
             interval: 10s
