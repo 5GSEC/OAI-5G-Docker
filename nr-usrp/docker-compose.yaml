@@ -157,6 +157,7 @@ services:
         container_name: oai-ext-dn
         image: oaisoftwarealliance/trf-gen-cn5g:latest
         entrypoint: /bin/bash -c \
+              "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; ip route; sleep infinity"
         command: ["/bin/bash", "-c", "trap : SIGTERM SIGINT; sleep infinity & wait"]
         healthcheck:
@@ -170,7 +171,7 @@ services:
  
     oai-cu:
         privileged: true
-        image: ${REGISTRY:-oaisoftwarealliance}/${GNB_IMG:-oai-gnb}:${TAG:-v2.1.0}
+        image: ${REGISTRY:-oaisoftwarealliance}/${GNB_IMG:-oai-gnb}:${TAG:-v2.2.0}
         container_name: oai-cu
         cap_drop:
             - ALL
@@ -197,7 +198,7 @@ services:
 
     oai-du:
         privileged: true
-        image: ${REGISTRY:-oaisoftwarealliance}/${GNB_IMG:-oai-gnb}:${TAG:-v2.1.0}
+        image: ${REGISTRY:-oaisoftwarealliance}/${GNB_IMG:-oai-gnb}:${TAG:-v2.2.0}
         container_name: oai-du
         cap_drop:
             - ALL
@@ -222,7 +223,7 @@ services:
         # unacceptable DL TCP performance. However, the whole point of
         # containerization is to not be in host mode, so update this to macvlan
         # later.
-        network_mode: "host"
+        #network_mode: "host"
         healthcheck:
             test: /bin/bash -c "pgrep nr-softmodem"
             interval: 10s
