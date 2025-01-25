@@ -413,6 +413,111 @@ services:
             timeout: 5s
             retries: 5
 
+    # attack demo
+    demo-oai-cu:
+        privileged: true
+        image: oai-gnb:latest
+        container_name: rfsim5g-oai-cu
+        cap_drop:
+            - ALL
+        environment:
+            USE_ADDITIONAL_OPTIONS: --log_config.global_log_options level,nocolor,time
+                                    --sa -E
+            ASAN_OPTIONS: detect_leaks=0:detect_odr_violation=0
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.150
+        volumes:
+          - ./gnb-cu-docker.conf:/opt/oai-gnb/etc/gnb.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-softmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    demo-oai-du:
+        privileged: true
+        image: oai-gnb:latest
+        container_name: rfsim5g-oai-du
+        cap_drop:
+            - ALL
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --sa -E --gNBs.[0].min_rxtxtime 6
+                                    --log_config.global_log_options level,nocolor,time
+            ASAN_OPTIONS: detect_leaks=0:detect_odr_violation=0
+        depends_on:
+            - demo-oai-cu
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.171
+        volumes:
+            - ./gnb-du-docker.conf:/opt/oai-gnb/etc/gnb.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-softmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    oai-attack-ue-1:
+        privileged: true
+        image: onehouwong/oai-nr-ue:nr.attack.v2.1.0
+        container_name: rfsim5g-oai-attack-ue-1
+        cap_drop:
+            - ALL
+        cap_add:
+            - NET_ADMIN  # for interface bringup
+            - NET_RAW    # for ping
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --log_config.global_log_options level,nocolor,time
+                                    -E --sa -r 106 --numerology 1 -C 3619200000
+                                    --rfsimulator.serveraddr 192.168.70.171
+                                    --RRC-TMSI 123456 # Blind DoS attack: victim UE using TMSI to attach
+            ASAN_OPTIONS: detect_odr_violation=0
+        depends_on:
+            - demo-oai-du
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.161
+        devices:
+             - /dev/net/tun:/dev/net/tun
+        volumes:
+            - ./nr-ues/nrue0.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-uesoftmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    oai-attack-ue-2:
+        privileged: true
+        image: onehouwong/oai-nr-ue:nr.attack.v2.1.0
+        container_name: rfsim5g-oai-attack-ue-2
+        cap_drop:
+            - ALL
+        cap_add:
+            - NET_ADMIN  # for interface bringup
+            - NET_RAW    # for ping
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --log_config.global_log_options level,nocolor,time
+                                    -E --sa -r 106 --numerology 1 -C 3619200000
+                                    --rfsimulator.serveraddr 192.168.70.171
+                                    --blind-dos-attack 100 --RRC-TMSI 123456 # Blind DoS attack: attacker UE using the same TMSI as the victim
+            ASAN_OPTIONS: detect_odr_violation=0
+        depends_on:
+            - demo-oai-du
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.162
+        devices:
+             - /dev/net/tun:/dev/net/tun
+        volumes:
+            - ./nr-ues/nrue.attack.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-uesoftmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
 networks:
     public_net:
         driver: bridge
