@@ -445,11 +445,38 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+    
+    oai-demo-ue-0:
+        privileged: true
+        image: ${REGISTRY:-oaisoftwarealliance}/${NRUE_IMG:-oai-nr-ue}:${TAG:-v2.2.0} # OAI v2.2.0 UE has NAS cipher and integrity support
+        container_name: rfsim5g-oai-nr-ue-0
+        cap_drop:
+            - ALL
+        cap_add:
+            - NET_ADMIN  # for interface bringup
+            - NET_RAW    # for ping
+        environment:
+            USE_ADDITIONAL_OPTIONS: --rfsim --log_config.global_log_options level,nocolor,time
+                                    -E -r 106 --numerology 1 -C 3619200000
+                                    --rfsimulator.serveraddr 192.168.70.171
+            ASAN_OPTIONS: detect_odr_violation=0
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.163
+        devices:
+             - /dev/net/tun:/dev/net/tun
+        volumes:
+            - ./nr-ues/nrue1.uicc.conf:/opt/oai-nr-ue/etc/nr-ue.conf
+        healthcheck:
+            test: /bin/bash -c "pgrep nr-uesoftmodem"
+            interval: 10s
+            timeout: 5s
+            retries: 5
 
-    oai-attack-ue-1:
+    oai-demo-ue-1:
         privileged: true
         image: onehouwong/oai-nr-ue:nr.attack.v2.1.0
-        container_name: rfsim5g-oai-attack-ue-1
+        container_name: rfsim5g-oai-nr-ue-1
         cap_drop:
             - ALL
         cap_add:
@@ -476,10 +503,10 @@ services:
             timeout: 5s
             retries: 5
 
-    oai-attack-ue-2:
+    oai-attack-ue-0:
         privileged: true
         image: onehouwong/oai-nr-ue:nr.attack.v2.1.0
-        container_name: rfsim5g-oai-attack-ue-2
+        container_name: rfsim5g-oai-attack-ue-0
         cap_drop:
             - ALL
         cap_add:
