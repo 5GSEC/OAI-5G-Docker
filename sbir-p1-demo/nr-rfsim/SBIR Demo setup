@@ -1,0 +1,37 @@
+SBIR Demo setup
+
+Three base stations
+
+
+Cell - DU0 - CU0 (208, 99, 10000)
+DU IP 192.168.70.170
+CU IP 192.168.70.150
+
+4 Normal UEs
+oai-nr-ue-0
+oai-nr-ue-1
+oai-nr-ue-2
+oai-nr-ue-3
+
+-------
+
+Cell - DU1 - CU1 (208, 99, 20000)
+DU IP 192.168.70.171
+CU IP 192.168.70.151
+
+2 UEs: subject to downgrade attacks
+oai-nr-ue-4
+oai-nr-ue-5
+
+-------
+
+Cell - DU - CU (208, 99, 30000)
+DU IP 192.168.70.172
+CU IP 192.168.70.152 -> CU need to use a tweaked OAI CU container to demonstrate Blind DoS attack
+
+2UEs: 1 normal UE, 1 Blind DoS victim UE, 1 Blind DoS attack UE
+
+oai-nr-ue-6 -> 1 normal UE
+oai-blind-dos-ue-victim -> blind DoS victim
+oai-blind-dos-ue-attacker -> blind DoS attacker
+
