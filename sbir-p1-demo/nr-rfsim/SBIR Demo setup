@@ -35,3 +35,5 @@ oai-nr-ue-6 -> 1 normal UE
 oai-blind-dos-ue-victim -> blind DoS victim
 oai-blind-dos-ue-attacker -> blind DoS attacker
 
+
+About UE Internet connectivity: In OAI v2.1.0, if UE uses NEA2 for AS security with gNB, it cannot ping external Internet through oaitun_ue1 tunnel
