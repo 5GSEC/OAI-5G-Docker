@@ -28,4 +28,4 @@ fi
 echo "Found CU: $cu_if, DU: $du_if"
 echo "Running agent with: $cu_if $du_if"
 
-docker-compose run -d --rm mobiflow-agent-0 "$cu_if" "$du_if"
+MOBIFLOW_COMMAND="$cu_if $du_if" docker-compose up -d mobiflow-agent-0

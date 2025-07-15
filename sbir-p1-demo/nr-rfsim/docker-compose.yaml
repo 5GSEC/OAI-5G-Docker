@@ -240,7 +240,7 @@ services:
         working_dir: /usr/src/5G-eBPF/build
         # entrypoint: ["/bin/bash"] # Test
         entrypoint: ["/usr/local/bin/entrypoint.sh"]
-        command: ["lo"] # this will be overwritten by the run script with dynamic F1 interface
+        command: ${MOBIFLOW_COMMAND:-lo} # this will be overwritten by the run script with dynamic F1 interface
         tty: true
     
     oai-nr-ue-0:
@@ -423,7 +423,7 @@ services:
         working_dir: /usr/src/5G-eBPF/build
         # entrypoint: ["/bin/bash"] # Test
         entrypoint: ["/usr/local/bin/entrypoint.sh"]
-        command: ["lo"] # this will be overwritten by the run script with dynamic F1 interface
+        command: ${MOBIFLOW_COMMAND:-lo} # this will be overwritten by the run script with dynamic F1 interface
         tty: true
     
     oai-nr-ue-4:
@@ -552,7 +552,7 @@ services:
         working_dir: /usr/src/5G-eBPF/build
         # entrypoint: ["/bin/bash"] # Test
         entrypoint: ["/usr/local/bin/entrypoint.sh"]
-        command: ["lo"] # this will be overwritten by the run script with dynamic F1 interface
+        command: ${MOBIFLOW_COMMAND:-lo} # this will be overwritten by the run script with dynamic F1 interface
         tty: true
     
     oai-nr-ue-6:
