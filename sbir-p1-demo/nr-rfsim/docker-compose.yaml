@@ -217,6 +217,32 @@ services:
             timeout: 5s
             retries: 5
     
+    mobiflow-agent-0:
+        container_name: mobiflow-agent-0
+        image: 5g-ebpf-0-mobiflow-agent:latest
+        privileged: true
+        network_mode: host
+        cap_add:
+          - SYS_ADMIN
+          - NET_ADMIN
+          - SYS_PTRACE
+        volumes:
+          - /sys/fs/bpf:/sys/fs/bpf
+          - /proc:/proc
+          - /lib/modules:/lib/modules
+          # Mount custom config.json into container
+          - ./mobiflow-agent-config-0.json:/usr/src/5G-eBPF/config.json:ro
+        healthcheck:
+          test: /bin/bash -c "pgrep loader"
+          interval: 10s
+          timeout: 5s
+          retries: 5
+        working_dir: /usr/src/5G-eBPF/build
+        # entrypoint: ["/bin/bash"] # Test
+        entrypoint: ["/usr/local/bin/entrypoint.sh"]
+        command: ["lo"] # this will be overwritten by the run script with dynamic F1 interface
+        tty: true
+    
     oai-nr-ue-0:
         privileged: true
         image: ${REGISTRY:-oaisoftwarealliance}/${NRUE_IMG:-oai-nr-ue}:${TAG:-v2.1.0}
@@ -374,6 +400,32 @@ services:
             timeout: 5s
             retries: 5
     
+    mobiflow-agent-1:
+        container_name: mobiflow-agent-1
+        image: 5g-ebpf-1-mobiflow-agent:latest
+        privileged: true
+        network_mode: host
+        cap_add:
+          - SYS_ADMIN
+          - NET_ADMIN
+          - SYS_PTRACE
+        volumes:
+          - /sys/fs/bpf:/sys/fs/bpf
+          - /proc:/proc
+          - /lib/modules:/lib/modules
+          # Mount custom config.json into container
+          - ./mobiflow-agent-config-1.json:/usr/src/5G-eBPF/config.json:ro
+        healthcheck:
+          test: /bin/bash -c "pgrep loader"
+          interval: 10s
+          timeout: 5s
+          retries: 5
+        working_dir: /usr/src/5G-eBPF/build
+        # entrypoint: ["/bin/bash"] # Test
+        entrypoint: ["/usr/local/bin/entrypoint.sh"]
+        command: ["lo"] # this will be overwritten by the run script with dynamic F1 interface
+        tty: true
+    
     oai-nr-ue-4:
         privileged: true
         image: ${REGISTRY:-oaisoftwarealliance}/${NRUE_IMG:-oai-nr-ue}:${TAG:-v2.1.0}
@@ -476,6 +528,32 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+    
+    mobiflow-agent-2:
+        container_name: mobiflow-agent-2
+        image: 5g-ebpf-2-mobiflow-agent:latest
+        privileged: true
+        network_mode: host
+        cap_add:
+          - SYS_ADMIN
+          - NET_ADMIN
+          - SYS_PTRACE
+        volumes:
+          - /sys/fs/bpf:/sys/fs/bpf
+          - /proc:/proc
+          - /lib/modules:/lib/modules
+          # Mount custom config.json into container
+          - ./mobiflow-agent-config-2.json:/usr/src/5G-eBPF/config.json:ro
+        healthcheck:
+          test: /bin/bash -c "pgrep loader"
+          interval: 10s
+          timeout: 5s
+          retries: 5
+        working_dir: /usr/src/5G-eBPF/build
+        # entrypoint: ["/bin/bash"] # Test
+        entrypoint: ["/usr/local/bin/entrypoint.sh"]
+        command: ["lo"] # this will be overwritten by the run script with dynamic F1 interface
+        tty: true
     
     oai-nr-ue-6:
         privileged: true

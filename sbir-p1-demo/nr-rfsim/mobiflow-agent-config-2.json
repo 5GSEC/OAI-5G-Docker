@@ -1,0 +1,86 @@
+{
+    "gNB": 
+    {
+        "MCC": "208",
+        "MNC": "99",
+        "GNB_ID": 30000, 
+        "GNB_DU_ID": 30000
+    },
+
+    "RIC":
+    {
+        "RIC_IP": "10.99.243.139",
+        "RIC_PORT": 36422,
+        "LOCAL_IP": "10.32.24.23"
+    },
+
+    "KPM":
+    {
+        "RAN_FUNCTION_ID_KPM": 1,
+        "RAN_FUNCTION_REVISION_KPM": 1,
+        "RAN_FUNCTION_SHORT_NAME_KPM": "E2SM-KPM",
+        "RAN_FUNCTION_OID_KPM": "1.3.6.1.4.1.53148.1.2.2.2",
+        "RAN_FUNCTION_DESC_KPM": "KPM Monitor"
+    },
+
+    "eBPF":
+    {
+        "eBPF_PROGRAM_NAME": "ebpf_filter.o", 
+        "eBPF_PROGRAM_PINNED_PATH": "/sys/fs/bpf/ebpf_filter_2",
+        "F1AP_MAP_NAME": "f1ap_packet_map_2"
+    },
+
+    "MobiFlow": 
+    {
+        "telemetry": [
+            {"name": "timestamp", "type": "metadata"},
+            {"name": "nr_cell_id_part1", "type": "metadata"},
+            {"name": "nr_cell_id_part2", "type": "metadata"},
+            {"name": "gnb_cu_ue_f1ap_id", "type": "metadata"},
+            {"name": "gnb_du_ue_f1ap_id", "type": "metadata"},
+            {"name": "rnti", "type": "metadata"},
+            {"name": "s_tmsi_part1", "type": "metadata"},
+            {"name": "s_tmsi_part2", "type": "metadata"},
+            {"name": "mobile_id_part1", "type": "metadata"},
+            {"name": "mobile_id_part2", "type": "metadata"},
+            {"name": "rrc_cipher_alg", "type": "metadata"},
+            {"name": "rrc_integrity_alg", "type": "metadata"},
+            {"name": "nas_cipher_alg", "type": "metadata"},
+            {"name": "nas_integrity_alg", "type": "metadata"},
+            {"name": "msg1", "type": "packet"},
+            {"name": "msg2", "type": "packet"},
+            {"name": "msg3", "type": "packet"},
+            {"name": "msg4", "type": "packet"},
+            {"name": "msg5", "type": "packet"},
+            {"name": "msg6", "type": "packet"},
+            {"name": "msg7", "type": "packet"},
+            {"name": "msg8", "type": "packet"},
+            {"name": "msg9", "type": "packet"},
+            {"name": "msg10", "type": "packet"},
+            {"name": "msg11", "type": "packet"},
+            {"name": "msg12", "type": "packet"},
+            {"name": "msg13", "type": "packet"},
+            {"name": "msg14", "type": "packet"},
+            {"name": "msg15", "type": "packet"}
+        ]
+    },
+
+    "KPM_MEASUREMENT": {
+        "telemetry": [
+            {"name": "RRC.ConnEstabAtt", "type": "kpm"},
+            {"name": "RRC.ConnEstabSucc", "type": "kpm"},
+            {"name": "RRC.ConnEstabFailCause.NetworkReject", "type": "kpm"},
+            {"name": "RRC.RelWithoutSuspendConfig", "type": "kpm"},
+            {"name": "UECNTX.ConnEstabAtt", "type": "kpm"},
+            {"name": "UECNTX.ConnEstabSucc", "type": "kpm"},
+            {"name": "RRC.ReEstabAtt", "type": "kpm"},
+            {"name": "RRC.ReEstabSuccWithUeContext", "type": "kpm"},
+            {"name": "RRC.ResumeAtt", "type": "kpm"},
+            {"name": "RRC.ResumeSucc", "type": "kpm"},
+            {"name": "RRC.ConnMean", "type": "kpm"},
+            {"name": "RRC.ConnMax", "type": "kpm"},
+            {"name": "RRC.InactiveConnMean", "type": "kpm"},
+            {"name": "RRC.InactiveConnMax", "type": "kpm"}
+        ]
+    }
+}
