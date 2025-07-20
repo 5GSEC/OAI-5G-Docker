@@ -4,7 +4,7 @@
 
 docker-compose up -d oai-cu-2 oai-du-2
 sleep 15s
-sudo ./run_mobiflow_agent_2.sh
+./run_mobiflow_agent_2.sh
 sleep 15s
 docker-compose up -d oai-nr-ue-6 
 sleep 5s
