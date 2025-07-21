@@ -484,7 +484,7 @@ services:
 
     oai-cu-2:
         privileged: true
-        image: onehouwong/oai-gnb:nr.attack.v2.1.0 # we need to use a tweaked OAI gNB image for the blind DoS attack demo
+        image: seranai/oai-gnb:nr.attack.v2.1.0 # we need to use a tweaked OAI gNB image for the blind DoS attack demo
         container_name: rfsim5g-oai-cu2
         cap_drop:
             - ALL
@@ -508,7 +508,7 @@ services:
 
     oai-du-2:
         privileged: true
-        image: onehouwong/oai-gnb:nr.attack.v2.1.0 # we need to use a tweaked OAI gNB image for the blind DoS attack demo
+        image: seranai/oai-gnb:nr.attack.v2.1.0 # we need to use a tweaked OAI gNB image for the blind DoS attack demo
         container_name: rfsim5g-oai-du2
         cap_drop:
             - ALL
@@ -585,7 +585,7 @@ services:
     # blind DoS attack - victim UE
     oai-blind-dos-ue-victim:
         privileged: true
-        image: onehouwong/oai-nr-ue:nr.attack.v2.1.0
+        image: seranai/oai-nr-ue:nr.attack.v2.1.0
         container_name: rfsim5g-oai-nr-ue-7
         cap_drop:
             - ALL
@@ -616,7 +616,7 @@ services:
     # blind DoS attack - attacker UE
     oai-blind-dos-ue-attacker:
         privileged: true
-        image: onehouwong/oai-nr-ue:nr.attack.v2.1.0
+        image: seranai/oai-nr-ue:nr.attack.v2.1.0
         container_name: rfsim5g-oai-attack-ue-0
         cap_drop:
             - ALL
