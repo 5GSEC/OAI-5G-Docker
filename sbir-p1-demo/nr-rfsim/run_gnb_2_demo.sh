@@ -3,7 +3,7 @@
 #docker-compose down oai-nr-ue-6 oai-blind-dos-ue-victim oai-blind-dos-ue-attacker
 
 docker-compose up -d oai-cu-2 oai-du-2
-sleep 15s
+sleep 10s
 ./run_mobiflow_agent_2.sh
 sleep 15s
 docker-compose up -d oai-nr-ue-6 
