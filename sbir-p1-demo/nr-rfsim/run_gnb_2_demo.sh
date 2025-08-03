@@ -9,5 +9,5 @@ sleep 15s
 docker-compose up -d oai-nr-ue-6 
 sleep 5s
 docker-compose up -d oai-blind-dos-ue-victim
-sleep 30s
+sleep 15s
 docker-compose up -d oai-blind-dos-ue-attacker 
